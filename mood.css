@@ -1,0 +1,650 @@
+/* ==========================================================================
+   LoveYourself — Mood Tracker Styles (mood.css)
+   Matches the warm cozy pastel aesthetic + Cat Tracker + Month Stickers +
+   Watercolor Affirmations + Bold Art-Deco Outline Numbers
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Montserrat:wght@700;800&family=Nunito:wght@500;600;700&display=swap');
+
+:root {
+  --mood-bg: #fdf8f4;
+  --mood-card: #fffdfb;
+  --mood-ink: #2f2523;
+  --mood-muted: #7c6b66;
+  --mood-border: #eddcd2;
+  --mood-accent: #e58e8a;
+  --mood-accent-soft: #fbe9e7;
+
+  /* Exact Mood Colors from your Cat Tracker Reference */
+  --mood-happy: #d97373;
+  --mood-soso: #a4b97c;
+  --mood-excited: #f3b844;
+  --mood-sad: #a9a8d4;
+  --mood-depressed: #b79678;
+  --mood-angry: #dc675b;
+}
+
+.mood-section {
+  position: relative;
+  background: radial-gradient(circle at 12% 10%, #fdf0ea 0%, transparent 42%),
+              radial-gradient(circle at 88% 85%, #f4effa 0%, transparent 45%),
+              var(--mood-bg);
+  color: var(--mood-ink);
+  font-family: 'Nunito', sans-serif;
+  padding: 3.5rem 1.25rem 4rem;
+  overflow: hidden;
+  border-top: 1px dashed var(--mood-border);
+}
+
+.mood-container {
+  position: relative;
+  z-index: 2;
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+/* Botanical Sticker Corner Accents (inspired by your botanical sticker sheet) */
+.mood-decor {
+  position: absolute;
+  width: 115px;
+  height: 140px;
+  pointer-events: none;
+  opacity: 0.72;
+  z-index: 1;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.mood-decor--top-left {
+  top: 18px;
+  left: 16px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 150'%3E%3Cellipse cx='60' cy='76' rx='38' ry='48' fill='%23d4e2dc'/%3E%3Cpath d='M60 132 C60 95, 58 55, 60 22' stroke='%232f2523' stroke-width='2' fill='none'/%3E%3Cpath d='M60 105 C42 96, 33 82, 36 72 C48 75, 56 88, 60 105 Z' fill='%23b5cec4' stroke='%232f2523' stroke-width='1.8'/%3E%3Cpath d='M60 85 C78 76, 87 62, 84 52 C72 55, 64 68, 60 85 Z' fill='%23b5cec4' stroke='%232f2523' stroke-width='1.8'/%3E%3Cpath d='M60 64 C44 54, 37 42, 41 33 C51 37, 57 49, 60 64 Z' fill='%23b5cec4' stroke='%232f2523' stroke-width='1.8'/%3E%3Ccircle cx='78' cy='34' r='4' fill='%232f2523'/%3E%3Ccircle cx='46' cy='24' r='3.5' fill='%232f2523'/%3E%3C/svg%3E");
+}
+
+.mood-decor--top-right {
+  top: 22px;
+  right: 18px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 150'%3E%3Cellipse cx='60' cy='75' rx='38' ry='48' fill='%23e8b5ac'/%3E%3Cpath d='M60 132 L60 62' stroke='%232f2523' stroke-width='2' fill='none'/%3E%3Cpath d='M60 105 C44 98, 38 87, 42 79 C52 82, 57 93, 60 105 Z' fill='%23d48c81' stroke='%232f2523' stroke-width='1.8'/%3E%3Cpath d='M60 95 C76 88, 82 77, 78 69 C68 72, 63 83, 60 95 Z' fill='%23d48c81' stroke='%232f2523' stroke-width='1.8'/%3E%3Cg transform='translate(60,46)'%3E%3Ccircle cx='0' cy='0' r='6' fill='%23f3c778' stroke='%232f2523' stroke-width='1.8'/%3E%3Cellipse cx='0' cy='-15' rx='5' ry='10' fill='%23f7ded8' stroke='%232f2523' stroke-width='1.6'/%3E%3Cellipse cx='0' cy='15' rx='5' ry='10' fill='%23f7ded8' stroke='%232f2523' stroke-width='1.6'/%3E%3Cellipse cx='-15' cy='0' rx='10' ry='5' fill='%23f7ded8' stroke='%232f2523' stroke-width='1.6'/%3E%3Cellipse cx='15' cy='0' rx='10' ry='5' fill='%23f7ded8' stroke='%232f2523' stroke-width='1.6'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.mood-decor--bottom-left {
+  bottom: 24px;
+  left: 16px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 150'%3E%3Cellipse cx='60' cy='75' rx='38' ry='48' fill='%23d8cbe6'/%3E%3Cpath d='M60 130 L60 45' stroke='%232f2523' stroke-width='2' fill='none'/%3E%3Cpath d='M60 110 C42 104, 34 91, 39 82 C49 85, 56 97, 60 110 Z' fill='%23bca8d4' stroke='%232f2523' stroke-width='1.8'/%3E%3Cpath d='M60 92 C78 86, 86 73, 81 64 C71 67, 64 79, 60 92 Z' fill='%23bca8d4' stroke='%232f2523' stroke-width='1.8'/%3E%3Cpath d='M60 72 C45 64, 39 52, 44 44 C52 48, 57 59, 60 72 Z' fill='%23bca8d4' stroke='%232f2523' stroke-width='1.8'/%3E%3C/svg%3E");
+}
+
+.mood-decor--bottom-right {
+  bottom: 24px;
+  right: 16px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 150'%3E%3Cellipse cx='60' cy='75' rx='38' ry='48' fill='%23f2e3b8'/%3E%3Cpath d='M60 130 L60 32' stroke='%232f2523' stroke-width='2' fill='none'/%3E%3Cpath d='M60 100 L42 82 M60 80 L78 62 M60 62 L44 46' stroke='%232f2523' stroke-width='1.8'/%3E%3Cpath d='M42 82 C36 76, 44 70, 42 82 Z' fill='%232f2523'/%3E%3Ccircle cx='40' cy='80' r='4.5' fill='%232f2523'/%3E%3Ccircle cx='80' cy='60' r='4.5' fill='%232f2523'/%3E%3Ccircle cx='42' cy='44' r='4.5' fill='%232f2523'/%3E%3Ccircle cx='60' cy='28' r='5' fill='%232f2523'/%3E%3C/svg%3E");
+}
+
+/* Header & Title */
+.mood-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.mood-title-row {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.mood-main-title {
+  font-family: 'Alex Brush', cursive;
+  font-size: clamp(2.8rem, 6vw, 4rem);
+  font-weight: 400;
+  color: var(--mood-ink);
+  margin: 0;
+  line-height: 1.05;
+  letter-spacing: 0.5px;
+}
+
+.header-cat-svg {
+  width: 84px;
+  height: 62px;
+  display: block;
+}
+
+/* Month Sticker + Year Bar */
+.mood-period-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 0.65rem auto 0.85rem;
+}
+
+.mood-nav-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid var(--mood-border);
+  background: #ffffff;
+  color: var(--mood-ink);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(47, 37, 35, 0.06);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.mood-nav-btn:hover {
+  transform: translateY(-2px);
+  background: var(--mood-accent-soft);
+}
+
+.month-sticker-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Die-Cut Month Sticker (Matching your uploaded Month Sticker Sheet) */
+.month-sticker {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 1.45rem;
+  background: #ffffff;
+  border-radius: 999px;
+  box-shadow:
+    0 0 0 5px #ffffff,
+    0 6px 16px rgba(47, 37, 35, 0.13);
+  transform: rotate(-1.5deg);
+  user-select: none;
+}
+
+.month-sticker-back {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.35rem, 3.6vw, 1.9rem);
+  letter-spacing: 0.08em;
+  color: var(--sticker-tint, #a9d6e5);
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.month-sticker-script {
+  position: absolute;
+  font-family: 'Alex Brush', cursive;
+  font-size: clamp(2.1rem, 5vw, 2.85rem);
+  font-weight: 400;
+  color: #1f1a19;
+  line-height: 1;
+  transform: translateY(3px);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+/* Bold Art-Deco Geometric Outline Numbers */
+.artdeco-year {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0.25rem 0.5rem;
+}
+
+.artdeco-digit-svg {
+  width: 22px;
+  height: 36px;
+  display: block;
+}
+
+.artdeco-day-num {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.artdeco-day-num .artdeco-digit-svg {
+  width: 15px;
+  height: 24px;
+}
+
+/* Action Pills */
+.mood-sub-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.mood-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.42rem 0.95rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--mood-border);
+  background: #ffffff;
+  color: var(--mood-ink);
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.mood-pill-btn:hover {
+  background: #fdf2ee;
+  transform: translateY(-1px);
+}
+
+.mood-pill-btn--accent {
+  background: var(--mood-accent-soft);
+  border-color: #eab5b0;
+}
+
+.history-count-badge {
+  background: var(--mood-accent);
+  color: #ffffff;
+  font-size: 0.75rem;
+  padding: 0.08rem 0.48rem;
+  border-radius: 999px;
+}
+
+/* Legend / Color Swatch Card */
+.mood-palette-card {
+  background: var(--mood-card);
+  border: 2px solid var(--mood-border);
+  border-radius: 22px;
+  padding: 0.95rem 1.1rem;
+  margin-bottom: 1.35rem;
+  box-shadow: 0 8px 22px rgba(47, 37, 35, 0.05);
+}
+
+.mood-instruction {
+  text-align: center;
+  font-size: 0.86rem;
+  color: var(--mood-muted);
+  margin: 0 0 0.75rem;
+  font-weight: 600;
+}
+
+.mood-legend-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.55rem 0.85rem;
+}
+
+.mood-swatch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  padding: 0.35rem 0.72rem;
+  border-radius: 14px;
+  border: 2px solid transparent;
+  background: #faf4f0;
+  cursor: pointer;
+  transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+}
+
+.mood-swatch:hover {
+  transform: translateY(-2px);
+}
+
+.mood-swatch.is-selected {
+  border-color: var(--mood-ink);
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(47, 37, 35, 0.1);
+}
+
+.swatch-box {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background: var(--swatch-color);
+  border: 2px solid var(--mood-ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.swatch-box--eraser {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--mood-muted);
+}
+
+.swatch-face svg {
+  width: 34px;
+  height: 19px;
+  display: block;
+}
+
+.swatch-label {
+  font-family: 'Alex Brush', cursive;
+  font-size: 1.45rem;
+  line-height: 1;
+  font-weight: 400;
+}
+
+/* Main Cat Tracker Paper Sheet */
+.cat-tracker-sheet {
+  background: #ffffff;
+  border: 2px solid var(--mood-border);
+  border-radius: 26px;
+  padding: 1.75rem 1.25rem 1.5rem;
+  box-shadow: 0 12px 32px rgba(47, 37, 35, 0.06);
+  position: relative;
+}
+
+.cat-shelves-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+}
+
+.cat-shelf-row {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0.5rem 0.75rem 0;
+  border-bottom: 2.5px solid var(--mood-ink);
+  margin: 0 auto;
+  width: fit-content;
+  max-width: 100%;
+}
+
+/* Decorative end dots on each shelf line just like your drawing */
+.cat-shelf-row::before,
+.cat-shelf-row::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--mood-ink);
+}
+
+.cat-shelf-row::before {
+  left: -9px;
+}
+
+.cat-shelf-row::after {
+  right: -9px;
+}
+
+.cat-day-btn {
+  position: relative;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0 -2px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cat-day-btn:hover,
+.cat-day-btn:focus-visible {
+  transform: translateY(-5px) scale(1.04);
+  z-index: 4;
+  outline: none;
+}
+
+.cat-day-btn.is-today .cat-day-badge {
+  background: var(--mood-ink);
+  color: #ffffff;
+}
+
+.cat-day-btn.is-active-day {
+  transform: translateY(-4px);
+  z-index: 3;
+}
+
+.cat-day-svg {
+  width: clamp(42px, 9.5vw, 68px);
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.cat-day-badge {
+  position: absolute;
+  bottom: 4px;
+  font-size: 0.66rem;
+  font-weight: 800;
+  color: var(--mood-ink);
+  background: rgba(255, 255, 255, 0.82);
+  padding: 0 4px;
+  border-radius: 6px;
+  pointer-events: none;
+  letter-spacing: 0.02em;
+}
+
+.shelf-flower-svg {
+  width: clamp(32px, 6vw, 46px);
+  height: auto;
+  margin: 0 4px -2px;
+  flex-shrink: 0;
+}
+
+/* Daily Note & Selected Day Bar */
+.mood-journal-bar {
+  margin-top: 1.5rem;
+  padding-top: 1.1rem;
+  border-top: 1.5px dashed var(--mood-border);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.selected-day-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: #faf3ee;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.mood-note-input-wrap {
+  flex: 1 1 260px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mood-note-input-wrap input {
+  flex: 1;
+  border: 1.5px solid var(--mood-border);
+  border-radius: 999px;
+  padding: 0.48rem 0.95rem;
+  font-family: inherit;
+  font-size: 0.86rem;
+  color: var(--mood-ink);
+  background: #fffdfb;
+}
+
+.mood-note-input-wrap input:focus {
+  outline: none;
+  border-color: var(--mood-accent);
+}
+
+.save-indicator {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #6b9460;
+  white-space: nowrap;
+}
+
+/* Watercolor Quote Sticker (inspired by your watercolor quote sheet) */
+.mood-quote-sticker {
+  margin: 1.25rem auto 0;
+  width: fit-content;
+  max-width: 92%;
+  padding: 0.85rem 1.85rem;
+  border-radius: 42% 58% 52% 48% / 48% 44% 56% 52%;
+  background:
+    radial-gradient(circle at 25% 35%, rgba(246, 173, 198, 0.55), transparent 60%),
+    radial-gradient(circle at 75% 65%, rgba(173, 216, 230, 0.55), transparent 60%),
+    radial-gradient(circle at 50% 50%, rgba(253, 232, 176, 0.55), transparent 70%);
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.mood-quote-sticker:hover {
+  transform: scale(1.03) rotate(-1deg);
+}
+
+.quote-script {
+  font-family: 'Alex Brush', cursive;
+  font-size: clamp(1.55rem, 3.6vw, 2.05rem);
+  color: #261e1d;
+  line-height: 1.15;
+}
+
+/* History Archive Panel */
+.mood-history-panel {
+  margin-top: 1.5rem;
+  background: #ffffff;
+  border: 2px solid var(--mood-border);
+  border-radius: 24px;
+  padding: 1.4rem;
+  box-shadow: 0 12px 28px rgba(47, 37, 35, 0.08);
+}
+
+.history-panel-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.history-panel-header h3 {
+  margin: 0 0 0.2rem;
+  font-size: 1.2rem;
+}
+
+.history-panel-header p {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--mood-muted);
+}
+
+.history-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.history-summary-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.summary-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 1.5px solid var(--mood-ink);
+}
+
+.history-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.history-filter-row select {
+  padding: 0.35rem 0.75rem;
+  border-radius: 10px;
+  border: 1.5px solid var(--mood-border);
+  font-family: inherit;
+  background: #fffdfb;
+}
+
+.history-records-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 310px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.history-record-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.55rem 0.85rem;
+  border-radius: 14px;
+  background: #fdf8f4;
+  border: 1px solid var(--mood-border);
+  font-size: 0.86rem;
+}
+
+.history-record-left {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.history-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.8px solid var(--mood-ink);
+  flex-shrink: 0;
+}
+
+.history-jump-btn {
+  border: none;
+  background: #ffffff;
+  border: 1px solid var(--mood-border);
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mood-back-row {
+  text-align: center;
+  margin-top: 1.75rem;
+}
+
+.mood-back-link {
+  color: var(--mood-muted);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.mood-back-link:hover {
+  color: var(--mood-ink);
+}

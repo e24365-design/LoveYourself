@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LoveYourself</title>
+  <link href="favicon.svg" rel="icon" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=2">
+  <link rel="stylesheet" href="mood.css?v=1">
+</head>
+<body>
+  <header>
+    <span>LoveYourself</span>
+  </header>
+
+  <main>
+    <section id="hero" class="hero">
+      <div class="hero-text">
+        <h1>Hi <span>Beautiful</span> !</h1>
+        <p id="affirmation" title="tap for another">you deserve softness, patience, and gentle days</p>
+        <a href="#tabs" class="scroll-btn">scroll down ↓</a>
+      </div>
+      <div class="hero-stickers">
+        <img alt="" src="butterfly.png?v=2">
+        <img alt="" src="goodthings.png?v=2">
+        <img alt="A girl in a cosy sweater reading a book" src="girl.png?v=2">
+        <img alt="" src="latte.png?v=2">
+        <img alt="" src="roses.png?v=2">
+        <img alt="" src="heart.png?v=2">
+      </div>
+    </section>
+
+    <section id="tabs" class="tabs-section">
+      <h2>Your little corners</h2>
+      <p>pick whatever you need right now</p>
+      <img alt="" loading="lazy" src="journal.png?v=2">
+      <img alt="" loading="lazy" src="backpack.png?v=2">
+      <img alt="" loading="lazy" src="headphones.png?v=2">
+      <img alt="" loading="lazy" src="leaf.png?v=2">
+      <img alt="" loading="lazy" src="candle.png?v=2">
+      <img alt="" loading="lazy" src="boba.png?v=2">
+      <div class="tabs-grid">
+        <a href="#mood" class="tab-card"><div></div>Mood Tracker<small>how are you today?</small></a>
+        <a href="#win" class="tab-card"><div></div>Win Jar<small>collect every little win</small></a>
+        <a href="#motivation" class="tab-card"><div></div>Motivation Mode<small>a push when you need it</small></a>
+        <a href="#panic" class="tab-card"><div></div>Panic Attack Help<small>calm, step by step</small></a>
+        <a href="#comfort" class="tab-card"><div></div>Comfort Corner<small>your cosy little space</small></a>
+      </div>
+    </section>
+
+<!-- ==========================================================================
+     LoveYourself — Mood Tracker Section (#mood)
+     Paste this <section id="mood"> into your index.html replacing the
+     existing Mood Tracker placeholder section, and link mood.css & mood.js
+     ========================================================================== -->
+<section id="mood" class="mood-section" aria-labelledby="mood-heading">
+  <!-- Decorative Botanical & Watercolor Stickers (matching your uploaded moodboard) -->
+  <div class="mood-decor mood-decor--top-left" aria-hidden="true"></div>
+  <div class="mood-decor mood-decor--top-right" aria-hidden="true"></div>
+  <div class="mood-decor mood-decor--bottom-left" aria-hidden="true"></div>
+  <div class="mood-decor mood-decor--bottom-right" aria-hidden="true"></div>
+
+  <div class="mood-container">
+    <!-- Header & Month Sticker Display -->
+    <header class="mood-header">
+      <div class="mood-title-row">
+        <h2 id="mood-heading" class="mood-main-title">Mood Tracker</h2>
+        <div class="mood-header-cat" aria-hidden="true">
+          <svg viewBox="0 0 110 82" class="header-cat-svg">
+            <!-- Heart floating above -->
+            <path d="M55 18 C55 18, 46 10, 46 5.5 C46 2.5, 48.5 1, 51 1 C53 1, 54.5 2.2, 55 3.8 C55.5 2.2, 57 1, 59 1 C61.5 1, 64 2.5, 64 5.5 C64 10, 55 18, 55 18 Z"
+                  fill="#d96b66" stroke="#2f2523" stroke-width="2" stroke-linejoin="round"/>
+            <!-- Cat body/head -->
+            <defs>
+              <linearGradient id="headerCatGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#e38b88"/>
+                <stop offset="55%" stop-color="#f2b880"/>
+                <stop offset="100%" stop-color="#f6cf78"/>
+              </linearGradient>
+            </defs>
+            <path d="M22 72 L26 36 L22 20 L38 30 C45 27, 65 27, 72 30 L88 20 L84 36 L88 72 Z"
+                  fill="url(#headerCatGrad)" stroke="#2f2523" stroke-width="2.5" stroke-linejoin="round"/>
+            <!-- Forehead stripes -->
+            <path d="M48 28.5 L48 35 M55 28 L55 36 M62 28.5 L62 35" stroke="#2f2523" stroke-width="2.2" stroke-linecap="round"/>
+            <!-- Happy closed eyes & smile -->
+            <path d="M37 46 Q41 50 45 46" fill="none" stroke="#2f2523" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M65 46 Q69 50 73 46" fill="none" stroke="#2f2523" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M53 49 L57 49 L55 51.5 Z" fill="#2f2523"/>
+            <path d="M49 52 Q52 56 55 52 Q58 56 61 52" fill="none" stroke="#2f2523" stroke-width="2.2" stroke-linecap="round"/>
+            <!-- Whiskers -->
+            <path d="M29 47 L22 45 M29 51 L21 52 M81 47 L88 45 M81 51 L89 52" stroke="#2f2523" stroke-width="2" stroke-linecap="round"/>
+            <!-- Ground line -->
+            <line x1="12" y1="72" x2="98" y2="72" stroke="#2f2523" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="7" cy="72" r="1.5" fill="#2f2523"/>
+            <circle cx="103" cy="72" r="1.5" fill="#2f2523"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Month Sticker + Bold Art-Deco Outline Year + History Navigation -->
+      <div class="mood-period-bar">
+        <button type="button" id="mood-prev-month" class="mood-nav-btn" aria-label="Previous month" title="Previous month">‹</button>
+
+        <div class="month-sticker-wrap" id="month-sticker-wrap">
+          <!-- Die-cut sticker badge dynamically rendered with layered uppercase + script calligraphy -->
+          <div class="month-sticker" id="month-sticker">
+            <span class="month-sticker-back" id="month-sticker-back">NOVEMBER</span>
+            <span class="month-sticker-script" id="month-sticker-script">November</span>
+          </div>
+          <!-- Bold geometric double-line numbers matching your reference image -->
+          <div class="artdeco-year" id="mood-year-display" aria-label="Year"></div>
+        </div>
+
+        <button type="button" id="mood-next-month" class="mood-nav-btn" aria-label="Next month" title="Next month">›</button>
+      </div>
+
+      <div class="mood-sub-actions">
+        <button type="button" id="mood-today-btn" class="mood-pill-btn">Today</button>
+        <button type="button" id="mood-history-btn" class="mood-pill-btn mood-pill-btn--accent">
+          <span>📅 Mood History</span>
+          <span class="history-count-badge" id="history-count-badge">0</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Active Brush / Mood Selector (Legend from your Cat Mood Tracker sheet) -->
+    <div class="mood-palette-card" role="region" aria-label="Select a mood color">
+      <p class="mood-instruction">
+        1. Pick a mood color below &nbsp;•&nbsp; 2. Tap a kitty day to color &amp; save forever
+      </p>
+      <div class="mood-legend-grid" id="mood-legend">
+        <button type="button" class="mood-swatch is-selected" data-mood="happy" style="--swatch-color: #d97373;">
+          <span class="swatch-box"></span>
+          <span class="swatch-face" aria-hidden="true">
+            <svg viewBox="0 0 44 24"><path d="M10 11 Q13 14 16 11 M28 11 Q31 14 34 11 M20 13 L24 13 L22 15 Z M17 15 Q19.5 19 22 15 Q24.5 19 27 15 M4 11 L8 12 M4 15 L8 14 M40 11 L36 12 M40 15 L36 14" fill="none" stroke="#2f2523" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </span>
+          <span class="swatch-label" style="color: #cf6a6a;">Happy</span>
+        </button>
+
+        <button type="button" class="mood-swatch" data-mood="soso" style="--swatch-color: #a4b97c;">
+          <span class="swatch-box"></span>
+          <span class="swatch-face" aria-hidden="true">
+            <svg viewBox="0 0 44 24"><path d="M10 11 L16 11 M28 11 L34 11 M20 13 L24 13 L22 15 Z M18 17 L26 17 M4 11 L8 12 M4 15 L8 14 M40 11 L36 12 M40 15 L36 14" fill="none" stroke="#2f2523" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </span>
+          <span class="swatch-label" style="color: #8ea663;">So So</span>
+        </button>
+
+        <button type="button" class="mood-swatch" data-mood="excited" style="--swatch-color: #f3b844;">
+          <span class="swatch-box"></span>
+          <span class="swatch-face" aria-hidden="true">
+            <svg viewBox="0 0 44 24"><circle cx="13" cy="11" r="1.8" fill="#2f2523"/><circle cx="31" cy="11" r="1.8" fill="#2f2523"/><path d="M20 13 L24 13 L22 15 Z M17 15 Q19.5 18 22 15 Q24.5 18 27 15 M19.5 17 C19.5 21.5 24.5 21.5 24.5 17 M4 10 L8 11.5 M3 13.5 L8 13.5 M4 17 L8 15.5 M40 10 L36 11.5 M41 13.5 L36 13.5 M40 17 L36 15.5" fill="none" stroke="#2f2523" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </span>
+          <span class="swatch-label" style="color: #e2a229;">Excited</span>
+        </button>
+
+        <button type="button" class="mood-swatch" data-mood="sad" style="--swatch-color: #a9a8d4;">
+          <span class="swatch-box"></span>
+          <span class="swatch-face" aria-hidden="true">
+            <svg viewBox="0 0 44 24"><path d="M10 12 L16 10 M28 10 L34 12 M20 13 L24 13 L22 15 Z M18 18 Q22 15 26 18 M4 11 L8 12 M4 15 L8 14 M40 11 L36 12 M40 15 L36 14" fill="none" stroke="#2f2523" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </span>
+          <span class="swatch-label" style="color: #8b89be;">Sad</span>
+        </button>
+
+        <button type="button" class="mood-swatch" data-mood="depressed" style="--swatch-color: #b79678;">
+          <span class="swatch-box"></span>
+          <span class="swatch-face" aria-hidden="true">
+            <svg viewBox="0 0 44 24"><path d="M10 12 Q13 9 16 12 M28 12 Q31 9 34 12 M13 13 L11 20 M15 13 L14 20 M31 13 L33 20 M29 13 L30 20 M20 13 L24 13 L22 15 Z M18 19 Q22 15 26 19 M4 11 L8 12 M4 15 L8 14 M40 11 L36 12 M40 15 L36 14" fill="none" stroke="#2f2523" stroke-width="1.7" stroke-linecap="round"/></svg>
+          </span>
+          <span class="swatch-label" style="color: #9b7a5c;">Depressed</span>
+        </button>
+
+        <button type="button" class="mood-swatch" data-mood="angry" style="--swatch-color: #dc675b;">
+          <span class="swatch-box"></span>
+          <span class="swatch-face" aria-hidden="true">
+            <svg viewBox="0 0 44 24"><path d="M10 9 L16 12 M34 9 L28 12 M12 12.5 A1.5 1.5 0 1 0 12.1 12.5 M32 12.5 A1.5 1.5 0 1 0 32.1 12.5 M17 19 C17 14 27 14 27 19 Z M19 16 L20 18 L21 16 M23 16 L24 18 L25 16 M4 10 L8 11.5 M3 13.5 L8 13.5 M4 17 L8 15.5 M40 10 L36 11.5 M41 13.5 L36 13.5 M40 17 L36 15.5" fill="none" stroke="#2f2523" stroke-width="1.7" stroke-linecap="round"/></svg>
+          </span>
+          <span class="swatch-label" style="color: #cf564a;">Angry</span>
+        </button>
+
+        <button type="button" class="mood-swatch mood-swatch--eraser" data-mood="clear" style="--swatch-color: #ffffff;">
+          <span class="swatch-box swatch-box--eraser">✕</span>
+          <span class="swatch-label" style="color: #7a6b66;">Clear</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Cat Shelf Canvas (Automatically renders 28, 29, 30, or 31 kitties for the selected month!) -->
+    <div class="cat-tracker-sheet">
+      <div class="cat-shelves-container" id="cat-shelves-container" aria-live="polite">
+        <!-- Shelves & Cats injected dynamically by mood.js -->
+      </div>
+
+      <!-- Optional Daily Note & Status Footer -->
+      <div class="mood-journal-bar">
+        <div class="selected-day-pill" id="selected-day-pill">
+          <span class="day-label">Day</span>
+          <span class="artdeco-day-num" id="selected-day-artdeco"></span>
+          <span id="selected-day-mood-text">Tap a cat to log your mood</span>
+        </div>
+        <div class="mood-note-input-wrap">
+          <input type="text" id="mood-day-note" maxlength="140" placeholder="Add a little note for this day (saved automatically)..." aria-label="Note for selected day" />
+          <span class="save-indicator" id="mood-save-indicator">Saved forever ✓</span>
+        </div>
+      </div>
+
+      <!-- Watercolor Affirmation Quote Sticker -->
+      <div class="mood-quote-sticker" id="mood-quote-sticker" title="Tap for another positive reminder">
+        <span class="quote-script" id="mood-quote-text">Good things take time</span>
+      </div>
+    </div>
+
+    <!-- History & Records Drawer / Section -->
+    <div class="mood-history-panel" id="mood-history-panel" hidden>
+      <div class="history-panel-header">
+        <div>
+          <h3>Your Forever Mood Archive</h3>
+          <p>Every day you log is stored permanently in your browser. Export a backup anytime.</p>
+        </div>
+        <div class="history-tools">
+          <button type="button" id="mood-export-btn" class="mood-pill-btn">⬇ Backup JSON</button>
+          <label class="mood-pill-btn" style="cursor:pointer;">
+            ⬆ Restore
+            <input type="file" id="mood-import-input" accept="application/json" hidden />
+          </label>
+          <button type="button" id="mood-close-history" class="mood-pill-btn mood-pill-btn--accent">Close ✕</button>
+        </div>
+      </div>
+
+      <!-- Monthly Breakdown Summary -->
+      <div class="history-summary-strip" id="history-summary-strip"></div>
+
+      <!-- Filter & Full Log List -->
+      <div class="history-list-wrap">
+        <div class="history-filter-row">
+          <label for="history-month-filter">Filter by Month:</label>
+          <select id="history-month-filter">
+            <option value="all">All Recorded Months</option>
+          </select>
+        </div>
+        <ul class="history-records-list" id="history-records-list"></ul>
+      </div>
+    </div>
+
+    <div class="mood-back-row">
+      <a href="#tabs" class="mood-back-link">↑ back to all tabs</a>
+    </div>
+  </div>
+</section>
+
+
+    <section id="win" class="corner-section">
+      <h3>Win Jar</h3>
+      <p>Coming soon ✨ this page is waiting for its details.</p>
+      <a href="#tabs">↑ back to all tabs</a>
+    </section>
+
+    <section id="motivation" class="corner-section">
+      <h3>Motivation Mode</h3>
+      <p>Coming soon ✨ this page is waiting for its details.</p>
+      <a href="#tabs">↑ back to all tabs</a>
+    </section>
+
+    <section id="panic" class="corner-section">
+      <h3>Panic Attack Help</h3>
+      <p>Coming soon ✨ this page is waiting for its details.</p>
+      <a href="#tabs">↑ back to all tabs</a>
+    </section>
+
+    <section id="comfort" class="corner-section">
+      <h3>Comfort Corner</h3>
+      <p>Coming soon ✨ this page is waiting for its details.</p>
+      <a href="#tabs">↑ back to all tabs</a>
+    </section>
+  </main>
+
+  <footer>
+    <img alt="" loading="lazy" src="tote.png?v=2">
+    <img alt="" loading="lazy" src="letter.png?v=2">
+    you are loved ♥
+  </footer>
+
+  <script src="script.js?v=2"></script>
+  <script src="mood.js?v=1"></script>
+</body>
+</html>
