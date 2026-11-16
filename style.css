@@ -21,7 +21,7 @@ img{max-width:100%;display:block}
 .hint{margin-top:1.4rem;display:inline-flex;align-items:center;gap:.5rem;font-size:.95rem;color:var(--wine);text-decoration:none;font-weight:600;letter-spacing:.04em;animation:bob 2.4s ease-in-out infinite}
 .hero-art{position:relative;height:min(62vh,520px);display:flex;justify-content:center;align-items:center}
 .girl{height:100%;max-height:520px;width:auto;filter:drop-shadow(0 14px 22px rgba(78,18,32,.28));position:relative;z-index:2}
-.stk{position:absolute;filter:drop-shadow(0 6px 10px rgba(78,18,32,.25));animation:float 6s ease-in-out infinite;pointer-events:none}
+.stk{position:absolute;filter:drop-shadow(0 4px 7px rgba(78,18,32,.22));animation:float 6s ease-in-out infinite;pointer-events:none}
 .s-butterfly{width:110px;top:2%;left:2%;transform:rotate(-12deg)}
 .s-goodthings{width:130px;top:6%;right:-2%;transform:rotate(8deg);animation-delay:-2s}
 .s-latte{width:96px;bottom:6%;left:0;transform:rotate(-6deg);animation-delay:-1s}
@@ -46,13 +46,18 @@ img{max-width:100%;display:block}
 .d2{position:absolute;width:110px;right:-34px;bottom:-40px;transform:rotate(9deg)}
 .d3{position:absolute;width:90px;left:4%;bottom:-10px;transform:rotate(-5deg)}
 .d4{position:absolute;width:90px;right:6%;top:10px;transform:rotate(10deg)}
+.d5{position:absolute;width:74px;left:-4%;top:56%;transform:rotate(-7deg);animation-delay:-2s}
+.d6{position:absolute;width:54px;right:-3%;top:56%;transform:rotate(8deg);animation-delay:-3s}
 
 /* placeholder sections */
 .panel{max-width:760px;margin:0 auto 2.2rem;padding:2rem 1.6rem;border-radius:30px;background:rgba(255,255,255,.7);border:2px dashed var(--rose);text-align:center;scroll-margin-top:1rem}
 .panel h3{font-family:var(--serif);font-style:italic;color:var(--wine);font-size:1.7rem;margin-bottom:.4rem}
 .panel p{color:var(--wine-d);opacity:.8}
 .panel a{display:inline-block;margin-top:1rem;color:var(--wine);font-weight:600;text-decoration:none}
-footer{text-align:center;padding:2rem 1rem 3rem;font-family:var(--script);font-size:2rem;color:var(--wine)}
+footer{position:relative;text-align:center;padding:2rem 1rem 3rem;font-family:var(--script);font-size:2rem;color:var(--wine)}
+
+.f1{width:78px;left:6%;bottom:1.2rem;transform:rotate(-6deg)}
+.f2{width:84px;right:6%;bottom:1rem;transform:rotate(7deg);animation-delay:-2s}
 
 @keyframes float{0%,100%{translate:0 0}50%{translate:0 -10px}}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
@@ -62,6 +67,6 @@ footer{text-align:center;padding:2rem 1rem 3rem;font-family:var(--script);font-s
   .hero-art{height:380px}
   .s-goodthings{width:105px}.s-butterfly{width:84px}.s-latte{width:74px}.s-roses{width:74px}
   .tile,.glass{width:132px}.glass{height:132px}
-  .d1,.d4{display:none}.d2,.d3{width:70px}.d2{right:-10px;bottom:-30px}
+  .d1,.d4,.d5,.d6{display:none}.f1,.f2{width:56px}.d2,.d3{width:70px}.d2{right:-10px;bottom:-30px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important}html{scroll-behavior:auto}}
