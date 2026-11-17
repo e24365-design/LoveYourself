@@ -36,3 +36,11 @@
 .zz{animation:zz 2.6s ease-in-out infinite}@keyframes zz{0%,100%{opacity:.1;transform:translate(0,2px)}50%{opacity:.9;transform:translate(3px,-6px)}}
 .bird{animation:fly 14s linear infinite}.bird.b2{animation-duration:19s;animation-delay:-6s}@keyframes fly{from{transform:translateX(-40px)}to{transform:translateX(460px)}}
 .fl:hover circle{filter:brightness(1.08)}
+
+.wave{animation:wv 7s ease-in-out infinite alternate}.wave.w2{animation-duration:5s;animation-direction:alternate-reverse}@keyframes wv{from{transform:translateX(-26px)}to{transform:translateX(26px)}}
+.boat{transform:translate(70px,290px);animation:bt 46s linear infinite alternate}@keyframes bt{from{transform:translate(70px,290px)}to{transform:translate(330px,290px)}}
+.bob{animation:bb 3.2s ease-in-out infinite;transform-box:fill-box}@keyframes bb{50%{transform:translateY(3px) rotate(2deg)}}
+.fishj{opacity:0;transform:translate(130px,330px);animation:fj 9s linear infinite}
+@keyframes fj{0%,72%{opacity:0;transform:translate(130px,330px) rotate(0)}74%{opacity:1}84%{opacity:1;transform:translate(150px,296px) rotate(-35deg)}94%{opacity:1;transform:translate(176px,330px) rotate(35deg)}96%,100%{opacity:0;transform:translate(180px,336px)}}
+.fishs{animation:fs 16s linear infinite}@keyframes fs{from{transform:translate(-20px,330px)}to{transform:translate(430px,342px)}}
+.shell:hover path{filter:brightness(1.1)}.shells{display:flex;gap:.5rem;justify-content:center;font-size:1.6rem;flex-wrap:wrap}.shells span{opacity:.4}.shells span.on{opacity:1}

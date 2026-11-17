@@ -13,11 +13,11 @@ function books(){let b=LY.get('books',null);if(!b){b=SEED.map(([t,a])=>({t,a,s:'
 /* ---------- audio ---------- */
 let ac,buf,nodes=[],soundOn=false;
 function stopSound(){nodes.forEach(n=>{try{n.stop&&n.stop();n.disconnect()}catch(e){}});nodes=[]}
-function startSound(){stopSound();if(!soundOn||(st.scene!=='room'&&st.scene!=='mountain'))return;
+function startSound(){stopSound();if(!soundOn||(st.scene!=='room'&&st.scene!=='mountain'&&st.scene!=='beach'))return;
  if(!ac){ac=new(window.AudioContext||window.webkitAudioContext)();buf=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate);const d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}
  if(ac.state==='suspended')ac.resume();
  const s=ac.createBufferSource();s.buffer=buf;s.loop=true;const g=ac.createGain(),f=ac.createBiquadFilter();
- if(st.scene==='mountain'){f.type='lowpass';f.frequency.value=520;g.gain.value=.2;const l=ac.createOscillator(),lg=ac.createGain();l.frequency.value=.13;lg.gain.value=.12;l.connect(lg);lg.connect(g.gain);l.start();nodes.push(l,lg)}else if(st.weather==='rain'){f.type='bandpass';f.frequency.value=1800;f.Q.value=.5;g.gain.value=.2}else{f.type='lowpass';f.frequency.value=240;g.gain.value=.3}
+ if(st.scene==='beach'){f.type='lowpass';f.frequency.value=800;g.gain.value=.16;const l=ac.createOscillator(),lg=ac.createGain();l.frequency.value=.11;lg.gain.value=.15;l.connect(lg);lg.connect(g.gain);l.start();nodes.push(l,lg)}else if(st.scene==='mountain'){f.type='lowpass';f.frequency.value=520;g.gain.value=.2;const l=ac.createOscillator(),lg=ac.createGain();l.frequency.value=.13;lg.gain.value=.12;l.connect(lg);lg.connect(g.gain);l.start();nodes.push(l,lg)}else if(st.weather==='rain'){f.type='bandpass';f.frequency.value=1800;f.Q.value=.5;g.gain.value=.2}else{f.type='lowpass';f.frequency.value=240;g.gain.value=.3}
  s.connect(f);f.connect(g);g.connect(ac.destination);s.start();nodes=[s,f,g];
  if(st.scene==='room'&&st.weather!=='rain'){const o=ac.createOscillator(),og=ac.createGain();o.frequency.value=110;og.gain.value=.012;o.connect(og);og.connect(ac.destination);o.start();nodes.push(o,og)}}
 /* ---------- room svg ---------- */
@@ -108,10 +108,31 @@ function mountain(){const n=st.mode==='night',gd=garden().slice(-70);
  const fl=gd.map((e,k)=>({e,i:garden().length-gd.length+k})).map(({e,i})=>({...fpos(i),k:e.k,i})).sort((a,b)=>a.y-b.y);
  fl.forEach(f=>{const c=FC[f.k%6];o+=`<g transform="translate(${f.x},${f.y}) scale(${f.s.toFixed(2)})"><g class="sway fl" data-i="${f.i}" style="cursor:pointer" tabindex="0" role="button" aria-label="a good thing from your day"><path d="M0 0V-26" stroke="#4f9a5a" stroke-width="2.6"/><path d="M0-8q-9-1-10-9M0-13q9-1 10-9" stroke="#4f9a5a" stroke-width="2" fill="none"/>${[0,72,144,216,288].map(a=>`<circle cx="${(Math.cos(a*Math.PI/180)*6.5).toFixed(1)}" cy="${(-30+Math.sin(a*Math.PI/180)*6.5).toFixed(1)}" r="5" fill="${c}" stroke="${f.k%6===3?'#e6d5df':'none'}"/>`).join('')}<circle cx="0" cy="-30" r="3.6" fill="${f.k%6===1?'#d98e2b':'#ffd95e'}"/><circle cx="0" cy="-28" r="16" fill="transparent"/></g></g>`});
  return `<svg id="room" viewBox="0 0 400 500" role="img" aria-label="mountain meadow">${o}</svg>`}
-function drawGarden(){const el=$('garden');if(st.scene!=='mountain'){el.hidden=true;return}el.hidden=false;const g=garden();
+function drawGarden(){const el=$('garden');if(st.scene==='beach'){el.hidden=false;const c=got();el.innerHTML=`<h3 style="font-family:'Great Vibes',cursive;font-weight:400;color:var(--wine);font-size:2rem;text-align:center">Shell collection</h3><p class="sub" style="margin:0 0 .6rem">${c.length} of ${SHELLS.length} found</p><div class="shells">${SHELLS.map((_,i)=>`<span class="${c.includes(i)?'on':''}">${c.includes(i)?'🐚':'○'}</span>`).join('')}</div>`;return}if(st.scene!=='mountain'){el.hidden=true;return}el.hidden=false;const g=garden();
  el.innerHTML=`<h3 style="font-family:'Great Vibes',cursive;font-weight:400;color:var(--wine);font-size:2rem;text-align:center">Flower garden</h3><p class="sub" style="margin:0 0 .6rem">write one good thing about today, and a flower blooms${g.length?` · ${g.length} so far 🌸`:''}</p><textarea class="note" id="gt" placeholder="Today something good was…"></textarea><div class="row"><button class="pill" id="gb">Plant a flower 🌸</button></div>`+(g.length?`<div style="margin-top:.8rem">${g.slice(-4).reverse().map(e=>`<div class="entry"><div><p>${esc(e.t)}</p><time>${esc(e.when)}</time></div></div>`).join('')}</div>`:'');
  $('gb').onclick=()=>{const t=$('gt').value.trim();if(!t)return toast('Write one good thing first 💗');const s=LY.stamp(),a=garden();a.push({t,when:s.text,iso:s.iso,k:Math.floor(Math.random()*6)});LY.set('garden_mountain',a);render();toast('A flower bloomed 🌸')}}
 function bindGarden(){document.querySelectorAll('.fl').forEach(f=>{const sh=()=>{const e=garden()[+f.dataset.i];if(e)toast(`🌸 ${e.t} · ${e.when}`)};f.onclick=sh;f.onkeydown=ev=>{if(ev.key==='Enter')sh()}})}
+
+/* ---------- beach + shells ---------- */
+const SHELLS=[[60,414],[132,448],[212,424],[292,458],[338,404],[172,484],[252,396],[98,474]],SCOL=['#ffb3c1','#fff4e6','#ffc08a','#e8c6ff'];
+const got=()=>LY.get('shells',[]);
+function beach(){const n=st.mode==='night',c=got();
+ const sky=n?['#10124a','#4b3a8c','#f0a3b8']:['#6ec6ff','#ffd9a8','#ffe9c4'];
+ let o=`<defs><linearGradient id="bsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky[0]}"/><stop offset=".7" stop-color="${sky[1]}"/><stop offset="1" stop-color="${sky[2]}"/></linearGradient><linearGradient id="bsea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${n?'#1b2a6b':'#46bfd8'}"/><stop offset="1" stop-color="${n?'#34508a':'#9aeadf'}"/></linearGradient></defs><rect width="400" height="500" fill="url(#bsky)"/>`;
+ if(n)o+=Array.from({length:22},(_,i)=>`<circle class="spark" style="animation-delay:${(i*.41%3).toFixed(2)}s" cx="${(i*79)%400}" cy="${14+(i*43)%200}" r="${1+(i%3)*.6}" fill="#fff6d8"/>`).join('')+`<circle cx="300" cy="86" r="22" fill="#fffbe8"/><circle cx="309" cy="79" r="19" fill="#1d2060"/>`;
+ else o+=`<circle cx="268" cy="214" r="52" fill="#fff0b0" opacity=".5"/><circle cx="268" cy="214" r="28" fill="#ffd25e"/><g class="cloud" fill="#fff" opacity=".9"><ellipse cx="90" cy="90" rx="36" ry="13"/><ellipse cx="114" cy="80" rx="22" ry="13"/></g><path class="bird" d="M40 60q6-8 12 0q6-8 12 0" stroke="#5a6a8a" stroke-width="2" fill="none"/><path class="bird b2" d="M90 44q5-6 10 0q5-6 10 0" stroke="#5a6a8a" stroke-width="2" fill="none"/>`;
+ o+=`<rect y="248" width="400" height="130" fill="url(#bsea)"/>`;
+ if(n)o+=`<g opacity=".7">${Array.from({length:9},(_,i)=>`<rect class="spark" style="animation-delay:${(i*.3).toFixed(1)}s" x="${296-i*2}" y="${256+i*10}" width="${16-i}" height="2.4" rx="1.2" fill="#fffbe8"/>`).join('')}</g>`;
+ else o+=Array.from({length:18},(_,i)=>`<path class="spark" style="animation-delay:${(i*.27%3).toFixed(2)}s" d="M${(i*53)%380+10} ${256+(i*29)%100}l3 0M${(i*53)%380+10+1.5} ${255+(i*29)%100}l0 3" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>`).join('');
+ o+=`<g class="boat"><g class="bob"><path d="M-22 0h44l-8 11h-28z" fill="${n?'#8a4b5a':'#d9576b'}"/><path d="M0 -2V-40" stroke="#6b4a3a" stroke-width="2.4"/><path d="M2 -38q18 18 18 34h-18z" fill="${n?'#d9d3ea':'#ffffff'}"/><path d="M-2 -32q-12 14-14 28h14z" fill="${n?'#b8a8d8':'#ffe0e6'}"/></g></g>`;
+ o+=`<g class="fishj"><path d="M0 0q8-6 16 0q-8 6-16 0zM16 0l7-5v10z" fill="${n?'#bcd0ff':'#ff9a5c'}"/></g><g class="fishs" opacity=".55"><path d="M0 0q6-5 12 0q-6 5-12 0zM12 0l5-4v8z" fill="#ffffff"/></g>`;
+ o+=`<g class="wave"><path d="M-60 352q20-10 40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0V392H-60z" fill="${n?'#4a67a8':'#c8f2f0'}" opacity=".85"/></g><g class="wave w2"><path d="M-60 366q20-10 40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0V406H-60z" fill="${n?'#6a86c4':'#e6fbf8'}" opacity=".9"/></g>`;
+ o+=`<path d="M0 384Q100 366 200 380T400 372V500H0z" fill="${n?'#8a7a95':'#f6dca0'}"/><path d="M0 440Q150 420 400 446V500H0z" fill="${n?'#7a6a88':'#efcf8c'}"/>`;
+ const palm=(x,y,s,fl)=>`<g transform="translate(${x},${y}) scale(${fl?-s:s} ${s})"><path d="M0 0Q-22-100 24-220" stroke="${n?'#5a3d4a':'#a8744a'}" stroke-width="13" fill="none" stroke-linecap="round"/><g class="sway" style="transform-origin:24px -220px"><g fill="${n?'#2c6a58':'#4fae6a'}"><path d="M24-220Q-30-262-66-214Q-14-236 24-220z"/><path d="M24-220Q-10-286-58-282Q-6-268 24-220z"/><path d="M24-220Q30-296 72-296Q40-272 24-220z"/><path d="M24-220Q84-262 112-222Q66-240 24-220z"/><path d="M24-220Q60-196 104-182Q62-196 24-220z" fill="${n?'#245a4c':'#3f9a5c'}"/><path d="M24-220Q-12-190-44-178Q-6-190 24-220z" fill="${n?'#245a4c':'#3f9a5c'}"/></g><circle cx="18" cy="-216" r="6.5" fill="#6b4226"/><circle cx="30" cy="-214" r="6.5" fill="#7b4c2e"/></g></g>`;
+ o+=palm(66,486,.62,false)+palm(348,458,.44,true);
+ SHELLS.forEach(([x,y],i)=>{if(c.includes(i))return;const col=SCOL[i%4];o+=`<g class="shell" data-i="${i}" transform="translate(${x},${y})" tabindex="0" role="button" aria-label="a shell" style="cursor:pointer"><path d="M0 0q-10-2-12-12q10-7 12-2q2-5 12 2q-2 10-12 12z" fill="${col}" stroke="#d98e9a" stroke-width="1"/><path d="M0 0l-6-10M0 0l0-12M0 0l6-10" stroke="#d98e9a" stroke-width=".9"/><circle cx="0" cy="-8" r="16" fill="transparent"/></g>`});
+ return `<svg id="room" viewBox="0 0 400 500" role="img" aria-label="beach">${o}</svg>`}
+function bindBeach(){document.querySelectorAll('.shell').forEach(e=>{const f=()=>{const c=got();c.push(+e.dataset.i);LY.set('shells',c);render();toast(c.length>=SHELLS.length?'You found every shell! 🐚💗':`Shell collected 🐚 ${c.length}/${SHELLS.length}`)};e.onclick=f;e.onkeydown=ev=>{if(ev.key==='Enter')f()}})}
 /* ---------- wiring ---------- */
 function bind(){const a=(id,f)=>{const e=$(id);if(!e)return;e.onclick=f;e.onkeydown=ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();f()}}};
  a('cat',petCat);a('hLamp',()=>{st.cosy=!st.cosy;render();toast(st.cosy?'Cosy mode 🕯️':'Bright mode ☀️')});
@@ -124,9 +145,10 @@ function render(){const stg=$('stage');
  if(st.scene==='room'){stg.innerHTML=room();bind();$('hint').textContent='tap the lamp, window, bookshelf, record player or the cat';if(!cat.t)catLoop()}
  else{clearTimeout(cat.t);cat.t=null;
   if(st.scene==='mountain'){stg.innerHTML=mountain();bindGarden();$('hint').textContent='tap a flower to remember its good thing'}
-  else{stg.innerHTML=`<div class="soon">${SC.find(s=>s[0]===st.scene)[1]}<br><small style="font-style:normal;font-family:Quicksand">is still growing 🌿<br>for now, the room and the mountain are ready for you</small></div>`;$('hint').textContent='the room and the mountain are ready · the other places are on their way'}}
+  else if(st.scene==='beach'){stg.innerHTML=beach();bindBeach();$('hint').textContent='tap the shells on the sand to collect them'}
+  else{stg.innerHTML=`<div class="soon">${SC.find(s=>s[0]===st.scene)[1]}<br><small style="font-style:normal;font-family:Quicksand">is still growing 🌿<br>for now, the room, mountain and beach are ready for you</small></div>`;$('hint').textContent='the room, mountain and beach are ready · the forest is on its way'}}
  drawGarden()}
-$('scenes').innerHTML=SC.map(([k,l])=>`<button class="pill${k==='room'||k==='mountain'?'':' later'}" data-s="${k}">${l}${k==='room'||k==='mountain'?'':' <small>soon</small>'}</button>`).join('');
+$('scenes').innerHTML=SC.map(([k,l])=>`<button class="pill${k==='forest'?' later':''}" data-s="${k}">${l}${k==='forest'?' <small>soon</small>':''}</button>`).join('');
 $('scenes').onclick=e=>{const b=e.target.closest('[data-s]');if(!b)return;st.scene=b.dataset.s;render();startSound()};
 $('dn').onclick=()=>{st.mode=st.mode==='day'?'night':'day';render()};
 $('snd').onclick=()=>{soundOn=!soundOn;render();if(soundOn)startSound();else stopSound()};
