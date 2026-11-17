@@ -12,12 +12,13 @@ const SEED=[['Shatter Me series','Tahereh Mafi'],['Twisted series','Ana Huang'],
 function books(){let b=LY.get('books',null);if(!b){b=SEED.map(([t,a])=>({t,a,s:'finished',r:0,q:''}));LY.set('books',b)}return b}
 /* ---------- audio ---------- */
 let ac,buf,nodes=[],soundOn=false;
-function stopSound(){nodes.forEach(n=>{try{n.stop&&n.stop();n.disconnect()}catch(e){}});nodes=[]}
-function startSound(){stopSound();if(!soundOn||(st.scene!=='room'&&st.scene!=='mountain'&&st.scene!=='beach'))return;
+let ct=null;function chirpOn(){clearTimeout(ct);const go=()=>{if(!soundOn||st.scene!=='forest')return;const night=st.mode==='night';try{const k=night?3:1+Math.floor(Math.random()*3);for(let i=0;i<k;i++){const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime+i*(night?.09:.13),b=night?4300:2400+Math.random()*1400;o.type='sine';o.frequency.setValueAtTime(b,t);if(!night)o.frequency.exponentialRampToValueAtTime(b*1.35,t+.09);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(night?.012:.03,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+.11);o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+.14)}}catch(e){}ct=setTimeout(go,night?900+Math.random()*1200:2500+Math.random()*5000)};ct=setTimeout(go,800)}
+function stopSound(){clearTimeout(ct);nodes.forEach(n=>{try{n.stop&&n.stop();n.disconnect()}catch(e){}});nodes=[]}
+function startSound(){stopSound();if(!soundOn||false)return;
  if(!ac){ac=new(window.AudioContext||window.webkitAudioContext)();buf=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate);const d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}
  if(ac.state==='suspended')ac.resume();
  const s=ac.createBufferSource();s.buffer=buf;s.loop=true;const g=ac.createGain(),f=ac.createBiquadFilter();
- if(st.scene==='beach'){f.type='lowpass';f.frequency.value=800;g.gain.value=.16;const l=ac.createOscillator(),lg=ac.createGain();l.frequency.value=.11;lg.gain.value=.15;l.connect(lg);lg.connect(g.gain);l.start();nodes.push(l,lg)}else if(st.scene==='mountain'){f.type='lowpass';f.frequency.value=520;g.gain.value=.2;const l=ac.createOscillator(),lg=ac.createGain();l.frequency.value=.13;lg.gain.value=.12;l.connect(lg);lg.connect(g.gain);l.start();nodes.push(l,lg)}else if(st.weather==='rain'){f.type='bandpass';f.frequency.value=1800;f.Q.value=.5;g.gain.value=.2}else{f.type='lowpass';f.frequency.value=240;g.gain.value=.3}
+ if(st.scene==='forest'){f.type='bandpass';f.frequency.value=st.mode==='night'?900:2600;f.Q.value=.4;g.gain.value=.07;const l=ac.createOscillator(),lg=ac.createGain();l.frequency.value=.09;lg.gain.value=.05;l.connect(lg);lg.connect(g.gain);l.start();nodes.push(l,lg);chirpOn()}else if(st.scene==='beach'){f.type='lowpass';f.frequency.value=800;g.gain.value=.16;const l=ac.createOscillator(),lg=ac.createGain();l.frequency.value=.11;lg.gain.value=.15;l.connect(lg);lg.connect(g.gain);l.start();nodes.push(l,lg)}else if(st.scene==='mountain'){f.type='lowpass';f.frequency.value=520;g.gain.value=.2;const l=ac.createOscillator(),lg=ac.createGain();l.frequency.value=.13;lg.gain.value=.12;l.connect(lg);lg.connect(g.gain);l.start();nodes.push(l,lg)}else if(st.weather==='rain'){f.type='bandpass';f.frequency.value=1800;f.Q.value=.5;g.gain.value=.2}else{f.type='lowpass';f.frequency.value=240;g.gain.value=.3}
  s.connect(f);f.connect(g);g.connect(ac.destination);s.start();nodes=[s,f,g];
  if(st.scene==='room'&&st.weather!=='rain'){const o=ac.createOscillator(),og=ac.createGain();o.frequency.value=110;og.gain.value=.012;o.connect(og);og.connect(ac.destination);o.start();nodes.push(o,og)}}
 /* ---------- room svg ---------- */
@@ -93,8 +94,9 @@ function petCat(){clearTimeout(cat.t);catSet('sit');toast(['meow~ 🐱💗','pur
 /* ---------- mountain + flower garden ---------- */
 const FC=['#ff8fb1','#ffd95e','#b38cf0','#ffffff','#e8505b','#ffa45c'];
 const fpos=i=>{const x=26+((i*97)%348),y=366+((i*53)%104);return{x,y,s:.55+(y-366)/104*.75}};
-function garden(){return LY.get('garden_mountain',[])}
-function mountain(){const n=st.mode==='night',gd=garden().slice(-70);
+function garden(k){return LY.get('garden_'+(k||st.scene),[])}
+const fposF=i=>{const l=i%2===0,j=Math.floor(i/2),x=l?20+((j*61)%118):262+((j*61)%118),y=376+((j*47)%96);return{x,y,s:.55+(y-376)/96*.7}};
+function mountain(){const n=st.mode==='night';
  const sky=n?['#12154d','#5b3a8c','#f0a3b8']:['#78c0ff','#bfe5ff','#eaf8ff'];
  let o=`<defs><linearGradient id="msky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky[0]}"/><stop offset=".6" stop-color="${sky[1]}"/><stop offset="1" stop-color="${sky[2]}"/></linearGradient></defs><rect width="400" height="500" fill="url(#msky)"/>`;
  if(n){o+=Array.from({length:26},(_,i)=>`<circle class="spark" style="animation-delay:${(i*.37%3).toFixed(2)}s" cx="${(i*83)%400}" cy="${20+(i*47)%210}" r="${1+(i%3)*.6}" fill="#fff6d8"/>`).join('')+`<circle cx="310" cy="96" r="22" fill="#fffbe8"/><circle cx="319" cy="89" r="19" fill="#2a2a70"/>`+`<ellipse cx="200" cy="330" rx="260" ry="80" fill="#ff9dc0" opacity=".28"/>`}
@@ -105,13 +107,78 @@ function mountain(){const n=st.mode==='night',gd=garden().slice(-70);
  [[22,330,1],[46,338,.8],[372,322,1.1],[350,334,.8],[8,345,.7]].forEach(([x,y,s])=>o+=`<g transform="translate(${x},${y}) scale(${s})"><path d="M0 0l-12 34h24z" fill="${n?'#1e4046':'#4d9a64'}"/><path d="M0 -16l-10 26h20z" fill="${n?'#25505a':'#5fb176'}"/></g>`);
  o+=`<path d="M0 392Q150 362 400 396V500H0z" fill="${n?'#264d4c':'#86c872'}"/>`;
  if(n)o+=Array.from({length:10},(_,i)=>`<circle class="spark" style="animation-delay:${(i*.5).toFixed(1)}s" cx="${30+(i*71)%340}" cy="${380+(i*37)%90}" r="2.2" fill="#ffe98a"/>`).join('');
- const fl=gd.map((e,k)=>({e,i:garden().length-gd.length+k})).map(({e,i})=>({...fpos(i),k:e.k,i})).sort((a,b)=>a.y-b.y);
- fl.forEach(f=>{const c=FC[f.k%6];o+=`<g transform="translate(${f.x},${f.y}) scale(${f.s.toFixed(2)})"><g class="sway fl" data-i="${f.i}" style="cursor:pointer" tabindex="0" role="button" aria-label="a good thing from your day"><path d="M0 0V-26" stroke="#4f9a5a" stroke-width="2.6"/><path d="M0-8q-9-1-10-9M0-13q9-1 10-9" stroke="#4f9a5a" stroke-width="2" fill="none"/>${[0,72,144,216,288].map(a=>`<circle cx="${(Math.cos(a*Math.PI/180)*6.5).toFixed(1)}" cy="${(-30+Math.sin(a*Math.PI/180)*6.5).toFixed(1)}" r="5" fill="${c}" stroke="${f.k%6===3?'#e6d5df':'none'}"/>`).join('')}<circle cx="0" cy="-30" r="3.6" fill="${f.k%6===1?'#d98e2b':'#ffd95e'}"/><circle cx="0" cy="-28" r="16" fill="transparent"/></g></g>`});
+ o+=flowersSVG('mountain',n);
  return `<svg id="room" viewBox="0 0 400 500" role="img" aria-label="mountain meadow">${o}</svg>`}
-function drawGarden(){const el=$('garden');if(st.scene==='beach'){el.hidden=false;const c=got();el.innerHTML=`<h3 style="font-family:'Great Vibes',cursive;font-weight:400;color:var(--wine);font-size:2rem;text-align:center">Shell collection</h3><p class="sub" style="margin:0 0 .6rem">${c.length} of ${SHELLS.length} found</p><div class="shells">${SHELLS.map((_,i)=>`<span class="${c.includes(i)?'on':''}">${c.includes(i)?'🐚':'○'}</span>`).join('')}</div>`;return}if(st.scene!=='mountain'){el.hidden=true;return}el.hidden=false;const g=garden();
- el.innerHTML=`<h3 style="font-family:'Great Vibes',cursive;font-weight:400;color:var(--wine);font-size:2rem;text-align:center">Flower garden</h3><p class="sub" style="margin:0 0 .6rem">write one good thing about today, and a flower blooms${g.length?` · ${g.length} so far 🌸`:''}</p><textarea class="note" id="gt" placeholder="Today something good was…"></textarea><div class="row"><button class="pill" id="gb">Plant a flower 🌸</button></div>`+(g.length?`<div style="margin-top:.8rem">${g.slice(-4).reverse().map(e=>`<div class="entry"><div><p>${esc(e.t)}</p><time>${esc(e.when)}</time></div></div>`).join('')}</div>`:'');
- $('gb').onclick=()=>{const t=$('gt').value.trim();if(!t)return toast('Write one good thing first 💗');const s=LY.stamp(),a=garden();a.push({t,when:s.text,iso:s.iso,k:Math.floor(Math.random()*6)});LY.set('garden_mountain',a);render();toast('A flower bloomed 🌸')}}
+function drawGarden(){const el=$('garden');if(st.scene==='beach'){el.hidden=false;const c=got();el.innerHTML=`<h3 style="font-family:'Great Vibes',cursive;font-weight:400;color:var(--wine);font-size:2rem;text-align:center">Shell collection</h3><p class="sub" style="margin:0 0 .6rem">${c.length} of ${SHELLS.length} found</p><div class="shells">${SHELLS.map((_,i)=>`<span class="${c.includes(i)?'on':''}">${c.includes(i)?'🐚':'○'}</span>`).join('')}</div>`;return}if(st.scene!=='mountain'&&st.scene!=='forest'){el.hidden=true;return}el.hidden=false;const g=garden(),F=st.scene==='forest';
+ el.innerHTML=`<h3 style="font-family:'Great Vibes',cursive;font-weight:400;color:var(--wine);font-size:2rem;text-align:center">${F?'Enchanted garden':'Flower garden'}</h3><p class="sub" style="margin:0 0 .6rem">write one good thing about today, and ${F?'a glowing flower blooms':'a flower blooms'}${g.length?` · ${g.length} so far 🌸`:''}</p><textarea class="note" id="gt" placeholder="Today something good was…"></textarea><div class="row"><button class="pill" id="gb">Plant a flower 🌸</button></div>`+(g.length?`<div style="margin-top:.8rem">${g.slice(-4).reverse().map(e=>`<div class="entry"><div><p>${esc(e.t)}</p><time>${esc(e.when)}</time></div></div>`).join('')}</div>`:'');
+ $('gb').onclick=()=>{const t=$('gt').value.trim();if(!t)return toast('Write one good thing first 💗');const s=LY.stamp(),a=garden();a.push({t,when:s.text,iso:s.iso,k:Math.floor(Math.random()*6)});LY.set('garden_'+st.scene,a);render();toast(st.scene==='forest'?'A flower bloomed in the forest ✨':'A flower bloomed 🌸')}}
 function bindGarden(){document.querySelectorAll('.fl').forEach(f=>{const sh=()=>{const e=garden()[+f.dataset.i];if(e)toast(`🌸 ${e.t} · ${e.when}`)};f.onclick=sh;f.onkeydown=ev=>{if(ev.key==='Enter')sh()}})}
+
+function flowersSVG(sc,n){const all=garden(sc),gd=all.slice(-70),pf=sc==='forest'?fposF:fpos;let o='';const fl=gd.map((e,k)=>({e,i:all.length-gd.length+k})).map(({e,i})=>({...pf(i),k:e.k,i})).sort((a,b)=>a.y-b.y);
+ fl.forEach(f=>{const c=FC[f.k%6];o+=`<g transform="translate(${f.x},${f.y}) scale(${f.s.toFixed(2)})">${n&&sc==='forest'?`<circle cx="0" cy="-30" r="15" fill="${c}" opacity=".35"/>`:''}<g class="sway fl" data-i="${f.i}" style="cursor:pointer" tabindex="0" role="button" aria-label="a good thing from your day"><path d="M0 0V-26" stroke="#4f9a5a" stroke-width="2.6"/><path d="M0-8q-9-1-10-9M0-13q9-1 10-9" stroke="#4f9a5a" stroke-width="2" fill="none"/>${[0,72,144,216,288].map(a=>`<circle cx="${(Math.cos(a*Math.PI/180)*6.5).toFixed(1)}" cy="${(-30+Math.sin(a*Math.PI/180)*6.5).toFixed(1)}" r="5" fill="${c}" stroke="${f.k%6===3?'#e6d5df':'none'}"/>`).join('')}<circle cx="0" cy="-30" r="3.6" fill="${f.k%6===1?'#d98e2b':'#ffd95e'}"/><circle cx="0" cy="-28" r="16" fill="transparent"/></g></g>`});
+ return o}
+/* ---------- enchanted forest ---------- */
+const lit=()=>st.lit==null?st.mode==='night':st.lit;
+const KIND=['You are allowed to rest here 🌿','Small steps still move you forward 💗','Breathe in the green, breathe out the noise','You are doing better than you think ✨','Nothing to fix right now. Just be.','The forest is glad you came 🍄'];
+function forest(){const n=st.mode==='night',L=lit();let o='';
+ o+=`<defs><linearGradient id="fsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${n?'#08152a':'#2a6a48'}"/><stop offset=".55" stop-color="${n?'#12405a':'#86c288'}"/><stop offset="1" stop-color="${n?'#2c6c78':'#e3f3c0'}"/></linearGradient>
+ <linearGradient id="ray" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${n?'#bfe8ff':'#fffbd0'}" stop-opacity=".75"/><stop offset="1" stop-color="${n?'#bfe8ff':'#fffbd0'}" stop-opacity="0"/></linearGradient>
+ <radialGradient id="fglow"><stop offset="0" stop-color="#ffd27a" stop-opacity=".95"/><stop offset="1" stop-color="#ffd27a" stop-opacity="0"/></radialGradient>
+ <radialGradient id="hz"><stop offset="0" stop-color="${n?'#8ff0dc':'#fffbd8'}" stop-opacity="${n?.4:.85}"/><stop offset="1" stop-color="${n?'#8ff0dc':'#fffbd8'}" stop-opacity="0"/></radialGradient></defs><rect width="400" height="500" fill="url(#fsky)"/>`;
+ o+=`<ellipse cx="200" cy="290" rx="130" ry="170" fill="url(#hz)"/>`;
+ // far trees
+ [[128,10],[160,8],[236,9],[262,11],[110,7],[290,8],[190,6],[216,6]].forEach(([x,w],i)=>o+=`<rect x="${x}" y="${150+i%3*14}" width="${w}" height="190" fill="${n?'#1a4458':'#6fa879'}" opacity=".5"/>`);
+ // rays
+ o+=`<g class="rays">`+[[250,0,34,360],[300,0,26,380],[200,0,22,330],[340,0,30,360],[150,0,18,300]].map(([x,y,w,h],i)=>`<polygon class="ray" style="animation-delay:${i*1.3}s" points="${x},${y} ${x+w},${y} ${x-70-i*14+w},${h+40} ${x-120-i*14},${h+40}" fill="url(#ray)"/>`).join('')+`</g>`;
+ // mid trees
+ [[96,20,60],[304,22,50],[150,14,110],[258,15,100]].forEach(([x,w,t],i)=>o+=`<path d="M${x} ${t}h${w}l${i%2?4:-4} 300h-${w+6}z" fill="${n?'#0f2a3a':'#3f7048'}" opacity="${i<2?.95:.8}"/>`);
+ // mid foliage
+ [[110,70,34],[320,86,30],[165,128,26],[250,120,26]].forEach(([x,y,r],i)=>o+=`<g class="sway" style="animation-delay:${i*.7}s"><circle cx="${x}" cy="${y}" r="${r}" fill="${n?'#14465a':'#58a068'}" opacity=".7"/><circle cx="${x+r*.7}" cy="${y+r*.3}" r="${r*.7}" fill="${n?'#1a5468':'#74b87a'}" opacity=".6"/></g>`);
+ // ground + path
+ o+=`<path d="M0 340Q100 322 200 332T400 326V500H0z" fill="${n?'#12384a':'#5fa060'}"/>`;
+ o+=`<path d="M92 500Q170 440 190 372Q197 330 199 318L204 318Q208 332 216 372Q230 440 320 500z" fill="${n?'#2c6a70':'#cfeaa0'}"/><path d="M130 500Q180 450 196 392M270 500Q226 450 210 392" stroke="${n?'#3f8a8a':'#a8cf7a'}" stroke-width="3" fill="none" opacity=".6"/>`;
+ // dappled light on path (day) / moon pool (night)
+ o+=[[196,430,34,7],[206,380,18,4],[186,470,26,6]].map(([x,y,rx,ry],i)=>`<ellipse class="spark" style="animation-delay:${i*.9}s" cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${n?'#c8f6ff':'#fffde0'}" opacity=".6"/>`).join('');
+ // ferns
+ const fern=(x,y,s,f)=>`<g transform="translate(${x},${y}) scale(${f?-s:s} ${s})"><g class="sway" fill="none" stroke="${n?'#2f8a74':'#3f9a56'}" stroke-width="3" stroke-linecap="round"><path d="M0 0Q-24-30-50-34"/><path d="M0 0Q-8-40-14-62"/><path d="M0 0Q22-30 46-30"/><path d="M0 0Q-30-12-58-8"/></g></g>`;
+ o+=fern(118,462,1,false)+fern(290,456,.9,true)+fern(60,420,.8,false)+fern(348,420,.8,true);
+ // mossy rock + mushrooms
+ o+=`<path d="M262 452q4-30 36-34q34-2 46 34z" fill="${n?'#1d3e48':'#7a8f7a'}"/><path d="M264 446q8-22 34-24q28 0 40 22q-26-12-74 2z" fill="${n?'#2f7a64':'#6bb26f'}"/>`;
+ const mush=(id,x,y,s,col,lab)=>`<g class="hot" id="${id}" tabindex="0" role="button" aria-label="${lab}" transform="translate(${x},${y}) scale(${s})"><g class="mi">${n?`<circle class="spark" cx="0" cy="-10" r="22" fill="${col}" opacity=".18"/>`:''}<rect x="-4" y="-12" width="8" height="14" rx="3" fill="#fff4e6"/><path d="M-16 -10a16 14 0 0 1 32 0z" fill="${col}"/><circle cx="-6" cy="-16" r="2.2" fill="#fff" opacity=".85"/><circle cx="5" cy="-14" r="1.8" fill="#fff" opacity=".85"/></g><rect x="-22" y="-26" width="44" height="34" fill="transparent"/></g>`;
+ o+=mush('m1',316,424,1.3,n?'#7af0d8':'#e8505b','mushroom: a little chime')+mush('m2',92,474,1.1,n?'#ff9fe0':'#ff8fb1','mushroom: a little chime')+mush('m3',326,470,.8,n?'#a8b8ff':'#ffa45c','mushroom: a little chime');
+ // wild glowing flowers (decor)
+ o+=[[40,452],[58,468],[78,440],[104,456],[128,486],[272,478],[298,490],[330,452],[352,474],[366,440],[250,440],[150,470]].map(([x,y],i)=>{const c=['#ff8a3d','#ff6f61','#ffb347','#e9a0ff'][i%4],h=10+(i*7)%8;return `<g class="sway" style="animation-delay:${i*.4}s">${n?`<circle cx="${x}" cy="${y-h}" r="8" fill="${c}" opacity=".3"/>`:''}<path d="M${x} ${y}V${y-h}" stroke="#4f9a5a" stroke-width="1.6"/><circle cx="${x}" cy="${y-h}" r="3.6" fill="${c}"/><circle cx="${x}" cy="${y-h}" r="1.3" fill="#fff2b0"/></g>`}).join('');
+ // flowers (user's garden)
+ o+=flowersSVG('forest',n);
+ // near trunks + canopy
+ const tr=n?'#0b1d2a':'#3a4a30',tr2=n?'#13303f':'#55703c';
+ o+=`<path d="M-10 0H58Q74 180 54 330Q44 420 78 500H-10z" fill="${tr}"/><path d="M14 0Q24 180 12 330Q8 420 24 500" stroke="${tr2}" stroke-width="5" fill="none" opacity=".6"/><path d="M42 40Q38 200 34 300" stroke="${tr2}" stroke-width="3" fill="none" opacity=".5"/>
+ <path d="M408 0H350Q334 160 352 300Q362 420 330 500H408z" fill="${tr}"/><path d="M382 0Q372 160 384 300Q388 420 376 500" stroke="${tr2}" stroke-width="5" fill="none" opacity=".6"/>`;
+ o+=`<path d="M52 150Q82 134 112 138" stroke="${tr}" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M352 96Q326 84 300 92" stroke="${tr}" stroke-width="7" fill="none" stroke-linecap="round"/>`;
+ [[-8,10,56],[40,6,50],[96,-6,44],[160,-10,40],[220,-8,44],[280,-4,48],[340,8,54],[392,14,56],[70,40,34],[330,50,36],[18,58,30],[382,70,30]].forEach(([x,y,r],i)=>o+=`<g class="sway" style="animation-delay:${i*.5}s"><circle cx="${x}" cy="${y}" r="${r}" fill="${n?'#0e3a44':'#2f6e3e'}"/><circle cx="${x+r*.3}" cy="${y+r*.35}" r="${r*.7}" fill="${n?'#14505a':'#4d9a55'}" opacity=".8"/></g>`);
+ // lanterns
+ const lan=(id,x,y,lab)=>`<g class="hot" id="${id}" tabindex="0" role="button" aria-label="${lab}"><path d="M${x} ${y-22}V${y}" stroke="#c9a98a" stroke-width="1.6"/>${L?`<circle cx="${x}" cy="${y+12}" r="${n?46:30}" fill="url(#fglow)"/>`:''}<rect x="${x-9}" y="${y}" width="18" height="24" rx="6" fill="${L?'#ffe29a':'#d9c9a8'}" stroke="#a8825a" stroke-width="2.2"/><path d="M${x-6} ${y}v-4h12v4" fill="#a8825a"/><rect x="${x-24}" y="${y-24}" width="48" height="56" fill="transparent"/></g>`;
+ o+=lan('l1',98,152,'lantern: light or dim')+lan('l2',304,96,'lantern: light or dim');
+ // fairy lights along canopy
+ o+=[[30,86],[70,96],[120,70],[170,52],[230,50],[280,64],[330,88],[372,100]].map(([x,y],i)=>`<circle class="bulb" cx="${x}" cy="${y}" r="3.6" fill="${['#ffd27a','#ffb3c1','#fff1b0'][i%3]}" opacity="${L?1:.35}"/>`).join('');
+ // fog
+ o+=`<g class="cloud" style="animation-duration:30s" fill="${n?'#9ad8e0':'#ffffff'}" opacity="${n?.07:.14}"><ellipse cx="120" cy="352" rx="110" ry="12"/><ellipse cx="150" cy="360" rx="150" ry="16"/><ellipse cx="260" cy="400" rx="130" ry="14"/><ellipse cx="270" cy="408" rx="90" ry="9"/></g>`;
+ // motes / fireflies
+ o+=Array.from({length:n?16:12},(_,i)=>`<circle class="mote" style="animation-delay:${(i*.9).toFixed(1)}s;animation-duration:${9+i%5*2}s" cx="${40+(i*67)%330}" cy="${150+(i*83)%300}" r="${n?2.4:1.8}" fill="${n?'#ffe98a':'#fffbd0'}"/>`).join('');
+ // butterflies
+ const bf=(cls,c1,c2,id)=>`<g class="bfly ${cls}"><g class="hot" id="${id}" tabindex="0" role="button" aria-label="a butterfly"><g class="flap"><ellipse cx="-5" cy="-2" rx="6" ry="8" fill="${c1}"/><ellipse cx="5" cy="-2" rx="6" ry="8" fill="${c1}"/><ellipse cx="-4" cy="5" rx="4" ry="5" fill="${c2}"/><ellipse cx="4" cy="5" rx="4" ry="5" fill="${c2}"/></g><rect x="-1" y="-6" width="2" height="14" rx="1" fill="#4a3a30"/><circle r="22" fill="transparent"/></g></g>`;
+ o+=bf('b1',n?'#8ff0ff':'#ffb347',n?'#c6a8ff':'#ff7a59','bf1')+bf('b2',n?'#ffa8e8':'#ffe066',n?'#8ff0ff':'#ffb347','bf2');
+ o+=`<rect width="400" height="500" fill="#06101c" opacity="${n?(L?.1:.28):0}" pointer-events="none"/>`;
+ return `<svg id="room" viewBox="0 0 400 500" role="img" aria-label="enchanted forest">${o}</svg>`}
+const NOTES=[523.25,587.33,659.25,783.99,880];
+function chime(i){try{if(!ac){ac=new(window.AudioContext||window.webkitAudioContext)()}if(ac.state==='suspended')ac.resume();
+ [1,2].forEach(m=>{const o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.value=NOTES[i%5]*m;g.gain.setValueAtTime(.0001,ac.currentTime);g.gain.exponentialRampToValueAtTime(m===1?.16:.04,ac.currentTime+.02);g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+1.6);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+1.7)})}catch(e){}}
+let mi=0;
+function bindForest(){const a=(id,f)=>{const e=$(id);if(!e)return;e.onclick=f;e.onkeydown=ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();f()}}};
+ ['m1','m2','m3'].forEach(id=>a(id,()=>{chime(mi);toast(KIND[mi%KIND.length]);mi++;const e=$(id).querySelector('.mi');e.classList.remove('pop');void e.getBoundingClientRect();e.classList.add('pop')}));
+ ['l1','l2'].forEach(id=>a(id,()=>{st.lit=!lit();render();toast(st.lit?'Lantern glowing 🏮':'Lanterns resting')}));
+ ['bf1','bf2'].forEach(id=>a(id,()=>{chime(mi+2);mi++;toast(['A butterfly landed on your hand 🦋','It stayed a moment, just for you 🦋','Soft wings, soft day 🦋'][mi%3])}));
+ bindGarden()}
 
 /* ---------- beach + shells ---------- */
 const SHELLS=[[60,414],[132,448],[212,424],[292,458],[338,404],[172,484],[252,396],[98,474]],SCOL=['#ffb3c1','#fff4e6','#ffc08a','#e8c6ff'];
@@ -146,11 +213,11 @@ function render(){const stg=$('stage');
  else{clearTimeout(cat.t);cat.t=null;
   if(st.scene==='mountain'){stg.innerHTML=mountain();bindGarden();$('hint').textContent='tap a flower to remember its good thing'}
   else if(st.scene==='beach'){stg.innerHTML=beach();bindBeach();$('hint').textContent='tap the shells on the sand to collect them'}
-  else{stg.innerHTML=`<div class="soon">${SC.find(s=>s[0]===st.scene)[1]}<br><small style="font-style:normal;font-family:Quicksand">is still growing 🌿<br>for now, the room, mountain and beach are ready for you</small></div>`;$('hint').textContent='the room, mountain and beach are ready · the forest is on its way'}}
+  else{stg.innerHTML=forest();bindForest();$('hint').textContent='tap a mushroom, lantern or butterfly · write a good thing to grow a glowing flower'}}
  drawGarden()}
-$('scenes').innerHTML=SC.map(([k,l])=>`<button class="pill${k==='forest'?' later':''}" data-s="${k}">${l}${k==='forest'?' <small>soon</small>':''}</button>`).join('');
+$('scenes').innerHTML=SC.map(([k,l])=>`<button class="pill" data-s="${k}">${l}</button>`).join('');
 $('scenes').onclick=e=>{const b=e.target.closest('[data-s]');if(!b)return;st.scene=b.dataset.s;render();startSound()};
-$('dn').onclick=()=>{st.mode=st.mode==='day'?'night':'day';render()};
+$('dn').onclick=()=>{st.lit=null;st.mode=st.mode==='day'?'night':'day';render()};
 $('snd').onclick=()=>{soundOn=!soundOn;render();if(soundOn)startSound();else stopSound()};
 lyBackupBar($('backup'),()=>render());
 render();
