@@ -13,13 +13,13 @@ function books(){let b=LY.get('books',null);if(!b){b=SEED.map(([t,a])=>({t,a,s:'
 /* ---------- audio ---------- */
 let ac,buf,nodes=[],soundOn=false;
 function stopSound(){nodes.forEach(n=>{try{n.stop&&n.stop();n.disconnect()}catch(e){}});nodes=[]}
-function startSound(){stopSound();if(!soundOn||st.scene!=='room')return;
+function startSound(){stopSound();if(!soundOn||(st.scene!=='room'&&st.scene!=='mountain'))return;
  if(!ac){ac=new(window.AudioContext||window.webkitAudioContext)();buf=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate);const d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}
  if(ac.state==='suspended')ac.resume();
  const s=ac.createBufferSource();s.buffer=buf;s.loop=true;const g=ac.createGain(),f=ac.createBiquadFilter();
- if(st.weather==='rain'){f.type='bandpass';f.frequency.value=1800;f.Q.value=.5;g.gain.value=.2}else{f.type='lowpass';f.frequency.value=240;g.gain.value=.3}
+ if(st.scene==='mountain'){f.type='lowpass';f.frequency.value=520;g.gain.value=.2;const l=ac.createOscillator(),lg=ac.createGain();l.frequency.value=.13;lg.gain.value=.12;l.connect(lg);lg.connect(g.gain);l.start();nodes.push(l,lg)}else if(st.weather==='rain'){f.type='bandpass';f.frequency.value=1800;f.Q.value=.5;g.gain.value=.2}else{f.type='lowpass';f.frequency.value=240;g.gain.value=.3}
  s.connect(f);f.connect(g);g.connect(ac.destination);s.start();nodes=[s,f,g];
- if(st.weather!=='rain'){const o=ac.createOscillator(),og=ac.createGain();o.frequency.value=110;og.gain.value=.012;o.connect(og);og.connect(ac.destination);o.start();nodes.push(o,og)}}
+ if(st.scene==='room'&&st.weather!=='rain'){const o=ac.createOscillator(),og=ac.createGain();o.frequency.value=110;og.gain.value=.012;o.connect(og);og.connect(ac.destination);o.start();nodes.push(o,og)}}
 /* ---------- room svg ---------- */
 function room(){
  const n=st.mode==='night',w=st.weather,[c1,c2]=SKY[st.mode][w],bk=books().slice(0,24);
@@ -45,10 +45,10 @@ function room(){
  const cab=`<rect x="286" y="374" width="108" height="70" rx="6" fill="#e9d5c0" stroke="#c9a98a" stroke-width="3"/><path d="M340 380v58" stroke="#c9a98a" stroke-width="2"/><circle cx="334" cy="410" r="2.5" fill="#a07a58"/><circle cx="346" cy="410" r="2.5" fill="#a07a58"/>`;
  const rec=`<g id="rec"${LY.get('song',null)?'':''}><rect x="294" y="346" width="64" height="28" rx="5" fill="#8a4b5a"/><g class="spin"><circle cx="316" cy="360" r="12" fill="#2b1a1e"/><circle cx="316" cy="360" r="4.5" fill="#f4ae3a"/><path d="M316 349v6" stroke="#6b5b5b" stroke-width="1.5"/></g><path d="M346 350l-12 10" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><circle cx="346" cy="350" r="3" fill="#fff"/></g>`;
  const lamp=`<rect x="365" y="238" width="4" height="136" fill="#c9a98a"/><ellipse cx="367" cy="374" rx="12" ry="4" fill="#c9a98a"/><path d="M346 238l8-42h26l8 42z" fill="${st.cosy?'#ffd98c':'#ffe9b8'}" stroke="#e0b46a" stroke-width="2"/>`;
- const rug=`<ellipse cx="200" cy="474" rx="118" ry="20" fill="#d98e9a" opacity=".75"/><ellipse cx="200" cy="474" rx="96" ry="14" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="4 6"/><g><ellipse cx="236" cy="470" rx="24" ry="11" fill="#f3e2cf"/><circle cx="212" cy="466" r="10" fill="#f3e2cf"/><path d="M205 459l3-8 5 6M214 457l4-7 3 8" fill="#f3e2cf"/><path d="M212 466q2 2 4 0" stroke="#7a5a4a" stroke-width="1.3" fill="none"/><path d="M258 470q10-2 8-12" stroke="#f3e2cf" stroke-width="6" fill="none" stroke-linecap="round"/></g>`;
+ const rug=`<ellipse cx="200" cy="474" rx="118" ry="20" fill="#d98e9a" opacity=".75"/><ellipse cx="200" cy="474" rx="96" ry="14" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="4 6"/>`;
  const hot=(id,x,y,wd,h,l)=>`<g class="hot" id="${id}" tabindex="0" role="button" aria-label="${l}"><rect x="${x}" y="${y}" width="${wd}" height="${h}" rx="12" fill="transparent"/><rect class="tapme" x="${x-2}" y="${y-2}" width="${wd+4}" height="${h+4}" rx="14"/></g>`;
  const motes=[[90,200],[300,150],[180,350],[150,130]].map(([x,y],i)=>`<circle class="spark" style="animation-delay:${i*.7}s" cx="${x}" cy="${y}" r="2" fill="#fff"/>`).join('');
- return `<svg id="room" class="${LY.get('song',null)&&st.playing?'playing':''}" viewBox="0 0 400 500" role="img" aria-label="cosy room">${sky}<rect width="400" height="500" fill="${wall}"/><rect y="440" width="400" height="60" fill="${floor}"/><path d="M0 30Q100 66 200 44T400 34" stroke="${n?'#d9c0a0':'#c9a98a'}" stroke-width="2" fill="none"/>${out}${shelf}${seat}${decor}${cab}${rec}${lamp}${rug}${lights}
+ return `<svg id="room" class="${LY.get('song',null)&&st.playing?'playing':''}" viewBox="0 0 400 500" role="img" aria-label="cosy room">${sky}<rect width="400" height="500" fill="${wall}"/><rect y="440" width="400" height="60" fill="${floor}"/><path d="M0 30Q100 66 200 44T400 34" stroke="${n?'#d9c0a0':'#c9a98a'}" stroke-width="2" fill="none"/>${out}${shelf}${seat}${decor}${cab}${rec}${lamp}${rug}${catG()}${lights}
  <rect width="400" height="500" fill="#2a1030" opacity="${dark}" pointer-events="none"/><circle cx="367" cy="230" r="${st.cosy?120:50}" fill="url(#glow)" opacity="${st.cosy?1:.35}" pointer-events="none"/>${motes}
  ${hot('hWin',112,70,176,238,'window: change the weather')}${hot('hBook',10,106,102,230,'bookshelf: my books')}${hot('hRec',292,344,70,32,'record player: my song')}${hot('hLamp',342,190,50,54,'lamp: bright or cosy')}</svg>`}
 /* ---------- modal ---------- */
@@ -74,18 +74,59 @@ function openSong(){const s=LY.get('song',{title:'',url:''});
  $('sv').onclick=()=>{LY.set('song',{title:$('sn').value.trim(),url:$('su').value.trim()});toast('Song saved 💗');closeM();render()};
  $('sp').onclick=()=>{LY.set('song',{title:$('sn').value.trim(),url:$('su').value.trim()});closeM();playSong()};
  $('ss').onclick=()=>{stopYT();closeM();render()}}
+
+/* ---------- the cat ---------- */
+const cat={x:236,y:462,dir:1,pose:'sleep',t:null};
+const CF='#f3e2cf',CD='#7a5a4a';
+function catSVG(){const f=cat.dir===1?'':'scale(-1,1)';
+ if(cat.pose==='walk')return `<g transform="${f}"><path class="tailw" d="M20 -2Q36 -8 32 -24" stroke="${CF}" stroke-width="6" fill="none" stroke-linecap="round"/><g class="legA"><rect x="-16" y="4" width="5" height="12" rx="2.5" fill="#e6cfb4"/><rect x="8" y="4" width="5" height="12" rx="2.5" fill="#e6cfb4"/></g><g class="legB"><rect x="-8" y="4" width="5" height="12" rx="2.5" fill="${CF}"/><rect x="14" y="4" width="5" height="12" rx="2.5" fill="${CF}"/></g><ellipse rx="23" ry="10" fill="${CF}"/><ellipse cx="6" cy="-3" rx="9" ry="5" fill="#e8b98f" opacity=".7"/><circle cx="-25" cy="-7" r="9.5" fill="${CF}"/><path d="M-32-13l2-9 6 6M-24-15l5-8 3 9" fill="${CF}"/><circle cx="-29" cy="-8" r="1.4" fill="${CD}"/><circle cx="-22" cy="-8" r="1.4" fill="${CD}"/><path d="M-27-4q1.5 1.5 3 0" stroke="${CD}" stroke-width="1.2" fill="none"/></g>`;
+ if(cat.pose==='sit')return `<g transform="${f}"><path class="tailw" d="M10 8Q28 10 26-8" stroke="${CF}" stroke-width="6" fill="none" stroke-linecap="round"/><ellipse cx="0" cy="-2" rx="12" ry="16" fill="${CF}"/><ellipse cx="3" cy="-4" rx="6" ry="9" fill="#e8b98f" opacity=".6"/><circle cx="-2" cy="-24" r="10" fill="${CF}"/><path d="M-10-30l1-9 7 6M2-33l7-6 2 10" fill="${CF}"/><circle cx="-6" cy="-25" r="1.5" fill="${CD}"/><circle cx="2" cy="-25" r="1.5" fill="${CD}"/><path d="M-4-21q1.5 1.5 3 0" stroke="${CD}" stroke-width="1.2" fill="none"/><ellipse cx="-5" cy="12" rx="4" ry="3" fill="#e6cfb4"/><ellipse cx="4" cy="12" rx="4" ry="3" fill="#e6cfb4"/></g>`;
+ return `<g transform="${f}"><path d="M22 4q14-2 10-14" stroke="${CF}" stroke-width="6" fill="none" stroke-linecap="round"/><ellipse cx="0" cy="6" rx="24" ry="11" fill="${CF}"/><ellipse cx="6" cy="3" rx="10" ry="5" fill="#e8b98f" opacity=".6"/><circle cx="-24" cy="4" r="10" fill="${CF}"/><path d="M-31-3l2-8 6 6M-23-5l4-7 4 8" fill="${CF}"/><path d="M-29 4q2 2 4 0M-22 4q2 2 4 0" stroke="${CD}" stroke-width="1.3" fill="none"/><text class="zz" x="-34" y="-12" font-size="9" fill="#fff" opacity=".8">z</text></g>`}
+const catG=()=>`<g id="cat" class="hot" tabindex="0" role="button" aria-label="the cat" style="transform:translate(${cat.x}px,${cat.y}px)">${catSVG()}<rect x="-40" y="-36" width="80" height="60" fill="transparent"/></g>`;
+function catSet(pose,x,dur){const g=$('cat');if(!g)return;cat.pose=pose;if(x!=null){cat.dir=x<cat.x?1:-1;cat.x=x}
+ g.innerHTML=catSVG()+'<rect x="-40" y="-36" width="80" height="60" fill="transparent"/>';g.style.transition=dur?`transform ${dur}s linear`:'none';g.style.transform=`translate(${cat.x}px,${cat.y}px)`}
+function catLoop(){clearTimeout(cat.t);if(st.scene!=='room')return;const pick=a=>a[Math.floor(Math.random()*a.length)];
+ const act=Math.random();
+ if(act<.55){const tx=96+Math.random()*250,dur=Math.max(1.5,Math.abs(tx-cat.x)/26);catSet('walk',tx,dur);cat.t=setTimeout(()=>{catSet(pick(['sit','sleep','sit']));cat.t=setTimeout(catLoop,4000+Math.random()*7000)},dur*1000)}
+ else{catSet(pick(['sit','sleep']));cat.t=setTimeout(catLoop,3500+Math.random()*6000)}}
+function petCat(){clearTimeout(cat.t);catSet('sit');toast(['meow~ 🐱💗','purrrr…','the cat likes you 💗','mrrp!'][Math.floor(Math.random()*4)]);cat.t=setTimeout(catLoop,4500)}
+/* ---------- mountain + flower garden ---------- */
+const FC=['#ff8fb1','#ffd95e','#b38cf0','#ffffff','#e8505b','#ffa45c'];
+const fpos=i=>{const x=26+((i*97)%348),y=366+((i*53)%104);return{x,y,s:.55+(y-366)/104*.75}};
+function garden(){return LY.get('garden_mountain',[])}
+function mountain(){const n=st.mode==='night',gd=garden().slice(-70);
+ const sky=n?['#12154d','#5b3a8c','#f0a3b8']:['#78c0ff','#bfe5ff','#eaf8ff'];
+ let o=`<defs><linearGradient id="msky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky[0]}"/><stop offset=".6" stop-color="${sky[1]}"/><stop offset="1" stop-color="${sky[2]}"/></linearGradient></defs><rect width="400" height="500" fill="url(#msky)"/>`;
+ if(n){o+=Array.from({length:26},(_,i)=>`<circle class="spark" style="animation-delay:${(i*.37%3).toFixed(2)}s" cx="${(i*83)%400}" cy="${20+(i*47)%210}" r="${1+(i%3)*.6}" fill="#fff6d8"/>`).join('')+`<circle cx="310" cy="96" r="22" fill="#fffbe8"/><circle cx="319" cy="89" r="19" fill="#2a2a70"/>`+`<ellipse cx="200" cy="330" rx="260" ry="80" fill="#ff9dc0" opacity=".28"/>`}
+ else o+=`<circle cx="318" cy="92" r="44" fill="#fff6bf" opacity=".5"/><circle cx="318" cy="92" r="26" fill="#ffd966"/><g class="cloud" fill="#fff" opacity=".95"><ellipse cx="70" cy="90" rx="38" ry="14"/><ellipse cx="96" cy="80" rx="24" ry="14"/></g><g class="cloud" style="animation-duration:34s" fill="#fff" opacity=".9"><ellipse cx="220" cy="150" rx="34" ry="12"/><ellipse cx="240" cy="142" rx="20" ry="11"/></g><path class="bird" d="M60 60q6-8 12 0q6-8 12 0" stroke="#4a5a7a" stroke-width="2" fill="none"/><path class="bird b2" d="M110 46q5-6 10 0q5-6 10 0" stroke="#4a5a7a" stroke-width="2" fill="none"/>`;
+ const m1=n?'#3b3b86':'#a9bde0',m2=n?'#2a2a6a':'#8aa3cf',cap=n?'#cfd2ff':'#ffffff';
+ o+=`<path d="M-10 320L70 200l30 40 40-70 60 150z" fill="${m1}"/><path d="M-10 340L110 170l40 60 50-100 60 70 40-50 110 150v70H-10z" fill="${m2}"/><path d="M200 130l-24 44 18-8 12 16 12-14 16 10z" fill="${cap}"/><path d="M110 170l-18 32 14-6 10 12 10-14z" fill="${cap}"/><path d="M300 150l-16 30 12-5 8 10 10-10z" fill="${cap}"/>`;
+ o+=`<path d="M0 335Q110 300 210 330T400 318V500H0z" fill="${n?'#31545a':'#9fd68a'}"/>`;
+ [[22,330,1],[46,338,.8],[372,322,1.1],[350,334,.8],[8,345,.7]].forEach(([x,y,s])=>o+=`<g transform="translate(${x},${y}) scale(${s})"><path d="M0 0l-12 34h24z" fill="${n?'#1e4046':'#4d9a64'}"/><path d="M0 -16l-10 26h20z" fill="${n?'#25505a':'#5fb176'}"/></g>`);
+ o+=`<path d="M0 392Q150 362 400 396V500H0z" fill="${n?'#264d4c':'#86c872'}"/>`;
+ if(n)o+=Array.from({length:10},(_,i)=>`<circle class="spark" style="animation-delay:${(i*.5).toFixed(1)}s" cx="${30+(i*71)%340}" cy="${380+(i*37)%90}" r="2.2" fill="#ffe98a"/>`).join('');
+ const fl=gd.map((e,k)=>({e,i:garden().length-gd.length+k})).map(({e,i})=>({...fpos(i),k:e.k,i})).sort((a,b)=>a.y-b.y);
+ fl.forEach(f=>{const c=FC[f.k%6];o+=`<g transform="translate(${f.x},${f.y}) scale(${f.s.toFixed(2)})"><g class="sway fl" data-i="${f.i}" style="cursor:pointer" tabindex="0" role="button" aria-label="a good thing from your day"><path d="M0 0V-26" stroke="#4f9a5a" stroke-width="2.6"/><path d="M0-8q-9-1-10-9M0-13q9-1 10-9" stroke="#4f9a5a" stroke-width="2" fill="none"/>${[0,72,144,216,288].map(a=>`<circle cx="${(Math.cos(a*Math.PI/180)*6.5).toFixed(1)}" cy="${(-30+Math.sin(a*Math.PI/180)*6.5).toFixed(1)}" r="5" fill="${c}" stroke="${f.k%6===3?'#e6d5df':'none'}"/>`).join('')}<circle cx="0" cy="-30" r="3.6" fill="${f.k%6===1?'#d98e2b':'#ffd95e'}"/><circle cx="0" cy="-28" r="16" fill="transparent"/></g></g>`});
+ return `<svg id="room" viewBox="0 0 400 500" role="img" aria-label="mountain meadow">${o}</svg>`}
+function drawGarden(){const el=$('garden');if(st.scene!=='mountain'){el.hidden=true;return}el.hidden=false;const g=garden();
+ el.innerHTML=`<h3 style="font-family:'Great Vibes',cursive;font-weight:400;color:var(--wine);font-size:2rem;text-align:center">Flower garden</h3><p class="sub" style="margin:0 0 .6rem">write one good thing about today, and a flower blooms${g.length?` · ${g.length} so far 🌸`:''}</p><textarea class="note" id="gt" placeholder="Today something good was…"></textarea><div class="row"><button class="pill" id="gb">Plant a flower 🌸</button></div>`+(g.length?`<div style="margin-top:.8rem">${g.slice(-4).reverse().map(e=>`<div class="entry"><div><p>${esc(e.t)}</p><time>${esc(e.when)}</time></div></div>`).join('')}</div>`:'');
+ $('gb').onclick=()=>{const t=$('gt').value.trim();if(!t)return toast('Write one good thing first 💗');const s=LY.stamp(),a=garden();a.push({t,when:s.text,iso:s.iso,k:Math.floor(Math.random()*6)});LY.set('garden_mountain',a);render();toast('A flower bloomed 🌸')}}
+function bindGarden(){document.querySelectorAll('.fl').forEach(f=>{const sh=()=>{const e=garden()[+f.dataset.i];if(e)toast(`🌸 ${e.t} · ${e.when}`)};f.onclick=sh;f.onkeydown=ev=>{if(ev.key==='Enter')sh()}})}
 /* ---------- wiring ---------- */
 function bind(){const a=(id,f)=>{const e=$(id);if(!e)return;e.onclick=f;e.onkeydown=ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();f()}}};
- a('hLamp',()=>{st.cosy=!st.cosy;render();toast(st.cosy?'Cosy mode 🕯️':'Bright mode ☀️')});
+ a('cat',petCat);a('hLamp',()=>{st.cosy=!st.cosy;render();toast(st.cosy?'Cosy mode 🕯️':'Bright mode ☀️')});
  a('hWin',()=>{st.weather=WE[(WE.indexOf(st.weather)+1)%4];render();startSound();toast('Outside: '+WN[st.weather])});
  a('hBook',openBooks);a('hRec',()=>{if(LY.get('song',null)&&st.playing){stopYT();render();toast('Paused');return}if(LY.get('song',null)&&ytId(LY.get('song').url))playSong();else openSong()});
  const r=$('hRec');if(r)r.addEventListener('contextmenu',e=>{e.preventDefault();openSong()})}
 function render(){const stg=$('stage');
  document.querySelectorAll('#scenes .pill').forEach(b=>b.classList.toggle('on',b.dataset.s===st.scene));
  $('dn').textContent=st.mode==='day'?'☀️ Day':'🌙 Night';$('snd').textContent=soundOn?'🔊 sound on':'🔇 sound off';
- if(st.scene==='room'){stg.innerHTML=room();bind();$('hint').textContent='tap the lamp, window, bookshelf or record player'}
- else{stg.innerHTML=`<div class="soon">${SC.find(s=>s[0]===st.scene)[1]}<br><small style="font-style:normal;font-family:Quicksand">is still growing 🌿<br>for now, the cosy room is ready for you</small></div>`;$('hint').textContent='the room is ready · the other places are on their way'}}
-$('scenes').innerHTML=SC.map(([k,l])=>`<button class="pill${k==='room'?'':' later'}" data-s="${k}">${l}${k==='room'?'':' <small>soon</small>'}</button>`).join('');
+ if(st.scene==='room'){stg.innerHTML=room();bind();$('hint').textContent='tap the lamp, window, bookshelf, record player or the cat';if(!cat.t)catLoop()}
+ else{clearTimeout(cat.t);cat.t=null;
+  if(st.scene==='mountain'){stg.innerHTML=mountain();bindGarden();$('hint').textContent='tap a flower to remember its good thing'}
+  else{stg.innerHTML=`<div class="soon">${SC.find(s=>s[0]===st.scene)[1]}<br><small style="font-style:normal;font-family:Quicksand">is still growing 🌿<br>for now, the room and the mountain are ready for you</small></div>`;$('hint').textContent='the room and the mountain are ready · the other places are on their way'}}
+ drawGarden()}
+$('scenes').innerHTML=SC.map(([k,l])=>`<button class="pill${k==='room'||k==='mountain'?'':' later'}" data-s="${k}">${l}${k==='room'||k==='mountain'?'':' <small>soon</small>'}</button>`).join('');
 $('scenes').onclick=e=>{const b=e.target.closest('[data-s]');if(!b)return;st.scene=b.dataset.s;render();startSound()};
 $('dn').onclick=()=>{st.mode=st.mode==='day'?'night':'day';render()};
 $('snd').onclick=()=>{soundOn=!soundOn;render();if(soundOn)startSound();else stopSound()};

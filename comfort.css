@@ -29,3 +29,10 @@
 .yt{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 
 .pill.later{opacity:.7}.pill.later small{font-size:.65rem;font-weight:700;color:var(--rose);margin-left:.15rem}
+
+.tailw{animation:tl 1.2s ease-in-out infinite;transform-box:fill-box;transform-origin:0 100%}@keyframes tl{50%{transform:rotate(14deg)}}
+.legA{animation:lg .5s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 10%}.legB{animation:lg .5s ease-in-out infinite alternate-reverse;transform-box:fill-box;transform-origin:50% 10%}
+@keyframes lg{from{transform:rotate(-24deg)}to{transform:rotate(24deg)}}
+.zz{animation:zz 2.6s ease-in-out infinite}@keyframes zz{0%,100%{opacity:.1;transform:translate(0,2px)}50%{opacity:.9;transform:translate(3px,-6px)}}
+.bird{animation:fly 14s linear infinite}.bird.b2{animation-duration:19s;animation-delay:-6s}@keyframes fly{from{transform:translateX(-40px)}to{transform:translateX(460px)}}
+.fl:hover circle{filter:brightness(1.08)}
