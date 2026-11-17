@@ -16,7 +16,7 @@ const cat=(m,d)=>{const c=m?MOODS[m][1]:'#fff',tall=d%3!==0;
  return `<svg viewBox="0 0 60 64"><path d="M5 62V${tall?24:30}L10 ${tall?6:12}l11 11h18L50 ${tall?6:12}l5 ${tall?18:18}V62z" fill="${c}" stroke="#2b1a1e" stroke-width="2.6" stroke-linejoin="round"/><g fill="none" stroke="#2b1a1e" stroke-width="2" stroke-linecap="round">${m?F[m]:''}</g></svg>`};
 function render(){
  const n=dim(vy,vm); $('year').textContent=vy;
- const f=MS[vm]; $('msticker').innerHTML=f?`<img class="msticker" src="ly_m_${f}.png" alt="${MN[vm]}" onerror="this.outerHTML='<div class=mfall>${MN[vm].toUpperCase()}</div>'">`:`<div class="mfall">NOVEMBER</div>`;
+ const f=MS[vm]; $('msticker').innerHTML=f?`<img class="msticker" src="ly_m_${f}.png" alt="${MN[vm]}" onerror="this.outerHTML='<div class=mfall>${MN[vm].toUpperCase()}</div>'">`:`<div class="novw"><img class="msticker" src="ly_m_nov.png" alt="November"><span>November</span></div>`;
  const per=Math.ceil(n/4); let h='',d=1;
  for(let r=0;r<4&&d<=n;r++){h+='<div class="shelf">';for(let i=0;i<per&&d<=n;i++,d++){
   const e=data[key(vy,vm,d)],isT=vy===T.getFullYear()&&vm===T.getMonth()&&d===T.getDate();
