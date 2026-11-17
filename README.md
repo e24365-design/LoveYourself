@@ -1,18 +1,16 @@
-# LoveYourself — Mood Tracker Integration Guide
+# LoveYourself – next set of files
 
-## Included Files
-1. `mood.html` — The complete `<section id="mood">` markup to replace your current placeholder section in `index.html`.
-2. `mood.css` — All styles for the cat shelves, die-cut month stickers, bold geometric outline numbers, botanical corner stickers, watercolor quote badge, and history archive.
-3. `mood.js` — Interactive logic that detects the current month/year, generates the exact number of kitties (`28`, `29`, `30`, or `31`), saves moods & daily notes permanently in `localStorage`, and provides full history viewing + JSON backup/restore.
+Upload everything in this folder to the root of your repo (keep the `assets` folder), replacing files with the same name.
 
-## Quick Setup in `index.html`
-1. Place `mood.css` and `mood.js` in the root folder of your `LoveYourself` repository (alongside `index.html`).
-2. Inside `<head>` of `index.html`, add:
-   ```html
-   <link rel="stylesheet" href="mood.css?v=1">
-   ```
-3. Replace your existing Mood Tracker `<section>` in `index.html` with the contents of `mood.html`.
-4. Just before `</body>` in `index.html`, add:
-   ```html
-   <script src="mood.js?v=1"></script>
-   ```
+Then delete from the repo:
+- `index .html` (the one with a space in its name – GitHub never uses it)
+- `mood.css` (old, replaced by `pages.css`)
+
+New / changed:
+- index.html – Mood Tracker and Win Jar tiles now open their own pages
+- mood.html, mood.js – cat shelves for the current month/year (28–31 cats), month stickers, bold numbers, history
+- win.html, jar.html, jar.js – four jars, each with its own page, saved items with date + time, add form
+- common.js – saving + Backup/Restore buttons; pages.css – shared styling
+- assets/ – cut-out jars, month stickers, botanical stickers
+
+Saving: entries live in your browser (localStorage). Use the Backup button now and then, because clearing browser data erases them.

@@ -1,0 +1,26 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mood Tracker · LoveYourself</title><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="pages.css?v=1"></head>
+<body>
+<div class="bar"><a class="back" href="index.html#tabs">← all tabs</a><div id="backup" class="row" style="margin:0"></div></div>
+<img class="deco" src="assets/b_00.png" style="width:110px;left:1%;top:70px" alt="">
+<img class="deco" src="assets/b_22.png" style="width:110px;right:1%;top:260px" alt="">
+<img class="deco" src="assets/b_40.png" style="width:100px;left:2%;top:760px" alt="">
+<img class="deco" src="goodthings.png" style="width:120px;right:2%;top:700px;transform:rotate(7deg)" alt="">
+<main class="wrap">
+  <h1 class="title">Mood Tracker</h1>
+  <p class="sub">tap a kitty, then pick how the day felt · saved on this device forever</p>
+  <div class="card">
+    <div class="mhead"><div id="msticker"></div><div class="year" id="year"></div></div>
+    <div class="nav"><button class="pill" id="prev">‹ previous</button><button class="pill" id="now">today</button><button class="pill" id="next">next ›</button></div>
+    <div id="shelves"></div>
+    <div class="selbar" id="selbar"></div>
+    <div class="legend" id="legend"></div>
+    <textarea class="note" id="note" placeholder="a little note about this day (optional)…"></textarea>
+    <div class="row"><button class="pill" id="save">Save this day 💗</button><button class="pill" id="clear">Clear day</button></div>
+    <div class="selbar" id="msg"></div>
+  </div>
+  <h2 class="sec">This month</h2><div class="card" id="tally"></div>
+  <h2 class="sec">History</h2><p class="sub">every month you've filled in · tap one to open it</p>
+  <div class="hist" id="hist"></div>
+</main>
+<script src="common.js"></script><script src="mood.js"></script></body></html>
