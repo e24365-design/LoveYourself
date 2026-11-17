@@ -1,114 +1,38 @@
-/* Motivation Mode: quotes + "Remind You" affirmations on rotating paper backgrounds */
 (()=>{
-const REFRESH_MS=5*60*1000;
-/* r = width/height of the image; box = clear paper area [left, top, width, height] in % */
-const THEMES=[
- {f:'qbg-1.jpg',r:792/1270,box:[36,22,52,48],ink:'#4a3326',acc:'#8a5a3a'},
- {f:'qbg-8.jpg',r:700/1100,box:[20,26,62,52],ink:'#4e1220',acc:'#9b2b44'},
- {f:'qbg-3.jpg',r:694/1232,box:[26,33,48,36],ink:'#4a3320',acc:'#b0780f'},
- {f:'qbg-9.jpg',r:700/1100,box:[20,26,60,50],ink:'#2f4030',acc:'#5d7e5f'},
- {f:'qbg-5.jpg',r:570/1012,box:[22,30,44,44],ink:'#2e1a0c',acc:'#6e3412'},
- {f:'qbg-10.jpg',r:700/1100,box:[20,28,58,48],ink:'#3f2b4a',acc:'#7d5a96'},
- {f:'qbg-7.jpg',r:558/836,box:[32,20,54,52],ink:'#3e1018',acc:'#8e1f33'},
- {f:'qbg-2.jpg',r:670/1190,box:[20,28,56,42],ink:'#4a3326',acc:'#8a5a3a'},
- {f:'qbg-11.jpg',r:700/1100,box:[22,26,58,48],ink:'#4e1220',acc:'#8a5a14'},
- {f:'qbg-4.jpg',r:674/1012,box:[28,22,50,46],ink:'#3e2314',acc:'#9a3f58'},
- {f:'qbg-6.jpg',r:594/1056,box:[14,32,56,34],ink:'#2e1a0c',acc:'#6e3412'}
-];
-const $=id=>document.getElementById(id);
-const poster=$('poster'),txt=$('txt'),qEl=$('q'),byEl=$('by'),leadEl=$('lead'),root=document.querySelector('.mot');
-const bgs=[$('bgA'),$('bgB')];let bgOn=1;
-let mode=LY.get('mot_mode','quotes');if(mode!=='remind')mode='quotes';
-let cur=null,curTheme=null,nextAt=0,busy=false;
-
-const data=m=>m==='quotes'?LY_QUOTES.map(([t,a])=>({t,a})):LY_AFFIRM.map(t=>({t,a:''}));
+const $=id=>document.getElementById(id),Q=LYQUOTES,B=LYBG,esc=LY.esc;
+const AFF=["I am doing the best I can, and that is enough.","I am allowed to rest without earning it.","My feelings are valid, and they will pass.","I am learning, and learning takes time.","I deserve kindness, especially from myself.","Small steps still move me forward.","I am proud of how far I have come.","I can do hard things, one gentle step at a time.","It is okay to ask for help.","I am more than my worst days.","My worth is not measured by my marks.","I choose progress over perfection.","I am safe in this moment.","Mistakes are proof that I am trying.","I am allowed to take up space.","I can start again whenever I need to.","My best looks different every day, and that is okay.","I am growing at my own pace.","I am worthy of love, just as I am.","Today I will be as gentle with myself as I am with others.","I trust that things are working out, even slowly.","I have survived every hard day so far.","I am becoming someone I will be proud of.","My dreams are valid, and I am working towards them.","I let go of what I cannot control.","I am calm, I am capable, I am enough.","Good things are coming my way.","I am allowed to change my mind.","I celebrate my little wins.","I am loved more than I know."];
+const GR=[['#ffe3e8','#fff1d6'],['#e9d8f5','#ffe3e8'],['#d9ecff','#f3e1ff'],['#ffe0cc','#ffd1da'],['#d8f0e2','#fff4d4'],['#ffd6e6','#e6ddff']];
+/* deck: never repeats until every quote has been shown */
+let deck=LY.get('qdeck',null);
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
-
-/* every pick comes from a shuffled bag that is remembered, so nothing repeats until all have been seen */
-function pickItem(m){
-  const all=data(m),key='mot_bag_'+m;let bag=LY.get(key,[]);
-  bag=bag.filter(i=>i<all.length);
-  if(!bag.length){bag=shuffle(all.map((_,i)=>i));const last=LY.get('mot_last_'+m,-1);if(bag[bag.length-1]===last&&bag.length>1)bag.unshift(bag.pop())}
-  const i=bag.pop();LY.set(key,bag);LY.set('mot_last_'+m,i);return all[i];
-}
-/* backgrounds alternate in order; a long quote skips papers that are too small to hold it */
-function pickTheme(len){
-  let k=LY.get('mot_theme',Math.floor(Math.random()*THEMES.length));
-  const W=Math.min(innerWidth*.92,440);
-  for(let n=0;n<THEMES.length;n++){
-    k=(k+1)%THEMES.length;const t=THEMES[k];
-    const area=(W*t.box[2]/100)*((W/t.r)*t.box[3]/100);
-    if(area>=len*235)break;
-  }
-  LY.set('mot_theme',k);return THEMES[k];
-}
-function fit(){
-  const W=poster.clientWidth;let s=Math.max(12,Math.min(W*(mode==='remind'?.075:.062),30));
-  const lim=11;
-  txt.style.fontSize=s+'px';
-  while(s>lim&&(txt.scrollHeight>txt.clientHeight+1||txt.scrollWidth>txt.clientWidth+1)){s-=.5;txt.style.fontSize=s+'px'}
-}
-function place(t){
-  poster.style.setProperty('--r',t.r);poster.style.setProperty('--ink-c',t.ink);poster.style.setProperty('--acc-c',t.acc);
-  const [l,tp,w,h]=t.box;Object.assign(txt.style,{left:l+'%',top:tp+'%',width:w+'%',height:h+'%'});
-}
-function setBg(t,instant){
-  return new Promise(res=>{const im=new Image();im.onload=im.onerror=()=>{
-    const nb=bgs[1-bgOn],ob=bgs[bgOn];nb.style.backgroundImage=`url(${t.f})`;
-    if(instant){nb.style.transition=ob.style.transition='none'}
-    nb.classList.add('show');ob.classList.remove('show');bgOn=1-bgOn;
-    if(instant)requestAnimationFrame(()=>{nb.style.transition=ob.style.transition=''});res()};im.src=t.f});
-}
-function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
-async function show(instant){
-  if(busy)return;busy=true;
-  const item=pickItem(mode),t=pickTheme(item.t.length+(item.a||'').length+20);
-  if(!instant){txt.classList.add('out');await sleep(350)}
-  place(t);const bgP=setBg(t,instant);
-  leadEl.textContent=mode==='remind'?'a little reminder':'';
-  qEl.textContent=item.t;byEl.textContent=item.a?'— '+item.a:'';
-  fit();await bgP;
-  txt.classList.remove('out');cur=item;curTheme=t;nextAt=Date.now()+REFRESH_MS;favState();busy=false;
-  /* warm up the next paper so the swap is smooth */
-}
-/* ---- tabs ---- */
-function setMode(m,instant){
-  mode=m;LY.set('mot_mode',m);root.dataset.mode=m;
-  document.querySelectorAll('.seg button').forEach(b=>{const on=b.dataset.mode===m;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});
-  $('sub').textContent=m==='quotes'?'a new thought every time you tap':'gentle words, just for you';
-  show(instant);
-}
-document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{if(b.dataset.mode!==mode)setMode(b.dataset.mode)});
-$('next').onclick=()=>show();
-poster.tabIndex=0;poster.setAttribute('role','button');poster.setAttribute('aria-label','Tap for another one');
-poster.onclick=()=>show();
-poster.onkeydown=e=>{if(e.key==='Enter'||e.key===' '||e.key==='ArrowRight'){e.preventDefault();show()}};
-/* ---- auto refresh every 5 minutes ---- */
-setInterval(()=>{
-  const left=nextAt-Date.now();
-  if(left<=0&&!document.hidden){show();return}
-  const s=Math.max(0,Math.ceil(left/1000));
-  $('timer').textContent='a fresh '+(mode==='quotes'?'quote':'reminder')+' arrives in '+Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
-},1000);
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()>=nextAt)show()});
-/* ---- favourites ---- */
-const favs=()=>LY.get('mot_favs',[]);
-const same=(a,b)=>a.t===b.t&&a.m===b.m;
-function favState(){
-  const on=cur&&favs().some(f=>same(f,{t:cur.t,m:mode}));
-  const b=$('fav');b.setAttribute('aria-pressed',on);b.textContent=on?'♥ Saved':'♡ Save';renderFavs();
-}
-$('fav').onclick=()=>{
-  if(!cur)return;let f=favs();const o={t:cur.t,a:cur.a,m:mode};
-  f=f.some(x=>same(x,o))?f.filter(x=>!same(x,o)):[o,...f];LY.set('mot_favs',f);favState();
-};
-function renderFavs(){
-  const f=favs();$('fcount').textContent=f.length?'('+f.length+')':'';
-  $('flist').innerHTML=f.length?f.map((x,i)=>`<div class="fi"><p>${LY.esc(x.t)}${x.a?`<small>— ${LY.esc(x.a)}</small>`:''}</p><button data-i="${i}" aria-label="Remove">✕</button></div>`).join(''):'<p class="fempty">Tap ♡ Save on anything you want to keep close.</p>';
-  $('flist').querySelectorAll('button').forEach(b=>b.onclick=()=>{const g=favs();g.splice(+b.dataset.i,1);LY.set('mot_favs',g);favState()});
-}
-addEventListener('resize',()=>{clearTimeout(window.__mr);window.__mr=setTimeout(fit,120)});
-lyBackupBar($('backup'),()=>favState());
-setMode(mode,true);
-if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);
+function nextIdx(){if(!deck||deck.i>=deck.o.length||deck.o.length!==Q.length)deck={o:shuffle([...Q.keys()]),i:0};const v=deck.o[deck.i++];LY.set('qdeck',deck);return v}
+let cur=-1,bgI=LY.get('qbg',-1),hist=[],favs=LY.get('favq',[]),tmr=300;
+function fit(){const c=$('qcard'),t=$('qtext'),W=c.clientWidth;let fs=W*.075;t.style.fontSize=fs+'px';const p=$('q');
+ for(let i=0;i<40&&t.scrollHeight>t.clientHeight+1&&fs>W*.032;i++){fs-=W*.002;t.style.fontSize=fs+'px'}}
+function show(idx,newBg=true){const t=$('qtext');t.classList.add('out');
+ setTimeout(()=>{cur=idx;if(newBg){bgI=(bgI+1)%B.length;LY.set('qbg',bgI)}const b=B[bgI],[x0,y0,x1,y1]=b.r,c=$('qcard');
+  c.style.setProperty('--ar',b.ar);c.style.backgroundImage=`url(${b.f})`;
+  Object.assign(t.style,{left:x0*100+'%',top:y0*100+'%',width:(x1-x0)*100+'%',height:(y1-y0)*100+'%'});
+  $('q').textContent='“'+Q[idx].q+'”';$('qa').textContent=Q[idx].a;fit();t.classList.remove('out');
+  $('fav').textContent=favs.includes(idx)?'♥ Saved':'♡ Save';$('fav').classList.toggle('on',favs.includes(idx));tmr=300},newBg?250:0)}
+function go(){const i=nextIdx();if(cur>=0)hist.push(cur);show(i)}
+$('next').onclick=go;
+$('prev').onclick=()=>{if(hist.length)show(hist.pop())};
+$('fav').onclick=()=>{const k=favs.indexOf(cur);if(k>=0)favs.splice(k,1);else favs.unshift(cur);LY.set('favq',favs);$('fav').textContent=favs.includes(cur)?'♥ Saved':'♡ Save';$('fav').classList.toggle('on',favs.includes(cur));drawFavs()};
+$('copy').onclick=async()=>{const s=`“${Q[cur].q}” — ${Q[cur].a}`;try{await navigator.clipboard.writeText(s);$('copy').textContent='✓ Copied'}catch(e){$('copy').textContent='Select & copy'}setTimeout(()=>$('copy').textContent='⧉ Copy',1800)};
+function drawFavs(){$('favs').innerHTML=favs.length?favs.map(i=>`<div class="fq"><div><p>“${esc(Q[i].q)}”</p><small>— ${esc(Q[i].a)}</small></div><button data-i="${i}" aria-label="remove">✕</button></div>`).join(''):'<p class="empty sub">tap ♡ Save to keep the ones that hit home</p>';
+ document.querySelectorAll('#favs button').forEach(b=>b.onclick=()=>{favs=favs.filter(x=>x!==+b.dataset.i);LY.set('favq',favs);drawFavs();$('fav').textContent=favs.includes(cur)?'♥ Saved':'♡ Save'})}
+/* auto refresh every 5 minutes */
+setInterval(()=>{tmr--;if(tmr<=0){go();return}$('timer').textContent=`next quote in ${Math.floor(tmr/60)}:${String(tmr%60).padStart(2,'0')}`},1000);
+window.addEventListener('resize',fit);
+/* Remind You */
+let mine=LY.get('myaff',[]),ai=-1,ad=shuffle([...AFF.keys()]),ap=0;
+function aff(){const all=[...AFF,...mine];let t;if(mine.length&&Math.random()<.3)t=mine[Math.floor(Math.random()*mine.length)];else{t=AFF[ad[ap++%ad.length]]}
+ const g=GR[Math.floor(Math.random()*GR.length)],e=$('aff');e.style.setProperty('--g1',g[0]);e.style.setProperty('--g2',g[1]);e.textContent=t}
+$('anext').onclick=aff;$('aff').onclick=aff;
+function drawMine(){$('mine').innerHTML=mine.map((m,i)=>`<div class="mine"><span>${esc(m)}</span><button data-i="${i}" aria-label="remove">✕</button></div>`).join('');
+ document.querySelectorAll('#mine button').forEach(b=>b.onclick=()=>{mine.splice(+b.dataset.i,1);LY.set('myaff',mine);drawMine()})}
+$('aadd').onclick=()=>{const t=prompt('Write something kind to tell yourself:');if(t&&t.trim()){mine.unshift(t.trim());LY.set('myaff',mine);drawMine();aff()}};
+lyBackupBar($('backup'),()=>{favs=LY.get('favq',[]);mine=LY.get('myaff',[]);drawFavs();drawMine()});
+drawFavs();drawMine();aff();show(nextIdx());
 })();

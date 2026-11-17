@@ -1,0 +1,31 @@
+.ctl{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;align-items:center;margin-bottom:.8rem}
+.scenes{display:flex;gap:.4rem;flex-wrap:wrap;justify-content:center}.tg{display:flex;gap:.4rem}
+.scenes .pill.on{background:var(--wine);color:#fff;border-color:var(--wine)}
+.stage{padding:.6rem;max-width:520px;margin:0 auto;overflow:hidden}
+#room{width:100%;height:auto;display:block;border-radius:22px;touch-action:manipulation}
+.hot{cursor:pointer}.hot:focus{outline:none}.hot:hover .tapme,.hot:focus .tapme{opacity:1}
+.tapme{opacity:.0;transition:.2s;fill:none;stroke:#fff;stroke-width:2.5;stroke-dasharray:5 5}
+.spark{animation:tw 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes tw{0%,100%{opacity:.25;transform:scale(.7)}50%{opacity:1;transform:scale(1.15)}}
+.bulb{animation:tw 3s ease-in-out infinite}.bulb:nth-child(2n){animation-delay:-1s}.bulb:nth-child(3n){animation-delay:-2s}
+.drop{animation:fall .9s linear infinite}@keyframes fall{from{transform:translateY(-40px)}to{transform:translateY(240px)}}
+.flake{animation:snow 5s linear infinite}@keyframes snow{from{transform:translate(0,-30px)}50%{transform:translate(12px,100px)}to{transform:translate(-6px,240px)}}
+.cloud{animation:drift 26s linear infinite alternate}@keyframes drift{from{transform:translateX(-30px)}to{transform:translateX(40px)}}
+.spin{transform-box:fill-box;transform-origin:center;animation:sp 3s linear infinite;animation-play-state:paused}.playing .spin{animation-play-state:running}
+@keyframes sp{to{transform:rotate(360deg)}}
+.steam{animation:st 3s ease-in-out infinite;transform-box:fill-box}@keyframes st{0%,100%{opacity:.1;transform:translateY(2px)}50%{opacity:.6;transform:translateY(-4px)}}
+.sway{animation:sw 5s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}@keyframes sw{50%{transform:rotate(2.5deg)}}
+.soon{padding:3rem 1rem;text-align:center;font-family:'Playfair Display',serif;font-style:italic;color:var(--wine)}
+.modal{position:fixed;inset:0;background:rgba(60,20,30,.45);display:grid;place-items:center;z-index:20;padding:1rem}.modal[hidden]{display:none}
+.mbox{position:relative;background:var(--cream);border-radius:26px;max-width:520px;width:100%;max-height:88vh;overflow:auto;padding:1.4rem;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.mbox .x{position:absolute;right:.8rem;top:.6rem;border:0;background:none;font-size:1.3rem;cursor:pointer;color:var(--wine)}
+.mbox h2{font-family:'Great Vibes',cursive;font-weight:400;color:var(--wine);font-size:2.4rem;text-align:center}
+.bk{background:#fff;border-radius:16px;padding:.7rem .9rem;margin:.5rem 0;border-left:7px solid var(--rose);display:flex;justify-content:space-between;gap:.5rem}
+.bk b{display:block}.bk small{opacity:.7;display:block}.bk q{display:block;font-style:italic;margin-top:.2rem;font-size:.9rem}
+.badge{display:inline-block;font-size:.72rem;font-weight:700;border-radius:999px;padding:.1rem .55rem;background:#ffe3e8;color:var(--wine)}
+.frm{display:grid;gap:.45rem;margin-top:.8rem}.frm input,.frm select,.frm textarea{border:2px solid var(--rose);border-radius:12px;padding:.5rem .7rem;font:500 .95rem Quicksand;background:#fff;width:100%}
+.hearts button{background:none;border:0;font-size:1.3rem;cursor:pointer;opacity:.35}.hearts button.on{opacity:1}
+.rec{display:flex;gap:.8rem;align-items:center;justify-content:center;margin:.6rem 0}
+.yt{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+
+.pill.later{opacity:.7}.pill.later small{font-size:.65rem;font-weight:700;color:var(--rose);margin-left:.15rem}

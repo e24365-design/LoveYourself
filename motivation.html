@@ -1,35 +1,17 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Motivation Mode · LoveYourself</title><link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="pages.css?v=1"><link rel="stylesheet" href="motivation.css?v=1">
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,500;1,500;1,600&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
-</head>
+<title>Motivation · LoveYourself</title><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="pages.css?v=2"><link rel="stylesheet" href="motivation.css?v=1"></head>
 <body>
 <div class="bar"><a class="back" href="index.html#tabs">← all tabs</a><div id="backup" class="row" style="margin:0"></div></div>
-<main class="wrap mot">
-  <h1 class="title">Motivation Mode</h1>
-  <p class="sub" id="sub">a new thought every time you tap</p>
-
-  <div class="seg" role="tablist" aria-label="Choose a section">
-    <button class="on" role="tab" aria-selected="true" data-mode="quotes" id="tQ">✦ Quotes</button>
-    <button role="tab" aria-selected="false" data-mode="remind" id="tR">♡ Remind You</button>
-  </div>
-
-  <section class="poster" id="poster" aria-live="polite">
-    <div class="bg a" id="bgA"></div><div class="bg b" id="bgB"></div>
-    <div class="txt" id="txt">
-      <p class="lead" id="lead"></p>
-      <blockquote class="q" id="q"></blockquote>
-      <p class="by" id="by"></p>
-    </div>
-  </section>
-
-  <div class="ctl">
-    <button class="pill big" id="next">↻ Another one</button>
-    <button class="pill" id="fav" aria-pressed="false" title="Save to favourites">♡ Save</button>
-  </div>
-  <p class="timer" id="timer"></p>
-
-  <details class="favs" id="favs"><summary>My saved ones <span id="fcount"></span></summary><div id="flist"></div></details>
+<main class="wrap">
+  <h1 class="title">Motivation</h1>
+  <p class="sub">a new quote every time you tap · refreshes by itself every 5 minutes</p>
+  <div class="qcard" id="qcard"><div class="qtext" id="qtext"><p id="q"></p><cite id="qa"></cite></div></div>
+  <div class="row"><button class="pill" id="prev">‹ back</button><button class="pill big" id="next">✨ New quote</button><button class="pill" id="fav">♡ Save</button><button class="pill" id="copy">⧉ Copy</button></div>
+  <div class="selbar" id="timer"></div>
+  <h2 class="sec">Saved quotes</h2><div id="favs"></div>
+  <div class="remind" id="remind"><h2 class="sec2">Remind You</h2><p class="sub2">little things to tell yourself</p>
+    <div class="aff" id="aff"></div>
+    <div class="row"><button class="pill" id="anext">🌷 Remind me</button><button class="pill" id="aadd">＋ Add my own</button></div>
+    <div id="mine"></div></div>
 </main>
-<script src="quotes.js"></script><script src="affirmations.js"></script><script src="common.js"></script><script src="motivation.js"></script>
-</body></html>
+<script src="common.js"></script><script src="quotes.js"></script><script src="bg.js"></script><script src="motivation.js"></script></body></html>
