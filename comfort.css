@@ -52,3 +52,10 @@
 @keyframes bfb{0%{transform:translate(330px,380px)}30%{transform:translate(240px,300px)}60%{transform:translate(130px,370px)}100%{transform:translate(330px,380px)}}
 .flap{animation:fp .45s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}@keyframes fp{from{transform:scaleX(1)}to{transform:scaleX(.35)}}
 .mi{transform-box:fill-box;transform-origin:center bottom}.mi.pop{animation:pp .5s ease}@keyframes pp{40%{transform:scale(1.25)}}
+
+.rab{opacity:0;pointer-events:none;transform:translate(430px,456px)}.rab.run{pointer-events:auto;animation:rr 6.5s linear forwards}
+@keyframes rr{0%{opacity:1;transform:translate(430px,456px)}92%{opacity:1;transform:translate(128px,476px)}100%{opacity:0;transform:translate(112px,478px)}}
+.hop{animation:hp .42s ease-in-out infinite;transform-box:fill-box}@keyframes hp{50%{transform:translateY(-9px)}}
+.wl{animation:wlf 4.6s ease-in forwards;transform:translate(200px,460px)}
+@keyframes wlf{0%{opacity:1;transform:translate(200px,440px) scale(1)}85%{opacity:1}100%{opacity:0;transform:translate(200px,20px) scale(.4)}}
+.wstar:hover path{filter:brightness(1.3)}

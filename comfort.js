@@ -111,7 +111,7 @@ function mountain(){const n=st.mode==='night';
  return `<svg id="room" viewBox="0 0 400 500" role="img" aria-label="mountain meadow">${o}</svg>`}
 function drawGarden(){const el=$('garden');if(st.scene==='beach'){el.hidden=false;const c=got();el.innerHTML=`<h3 style="font-family:'Great Vibes',cursive;font-weight:400;color:var(--wine);font-size:2rem;text-align:center">Shell collection</h3><p class="sub" style="margin:0 0 .6rem">${c.length} of ${SHELLS.length} found</p><div class="shells">${SHELLS.map((_,i)=>`<span class="${c.includes(i)?'on':''}">${c.includes(i)?'🐚':'○'}</span>`).join('')}</div>`;return}if(st.scene!=='mountain'&&st.scene!=='forest'){el.hidden=true;return}el.hidden=false;const g=garden(),F=st.scene==='forest';
  el.innerHTML=`<h3 style="font-family:'Great Vibes',cursive;font-weight:400;color:var(--wine);font-size:2rem;text-align:center">${F?'Enchanted garden':'Flower garden'}</h3><p class="sub" style="margin:0 0 .6rem">write one good thing about today, and ${F?'a glowing flower blooms':'a flower blooms'}${g.length?` · ${g.length} so far 🌸`:''}</p><textarea class="note" id="gt" placeholder="Today something good was…"></textarea><div class="row"><button class="pill" id="gb">Plant a flower 🌸</button></div>`+(g.length?`<div style="margin-top:.8rem">${g.slice(-4).reverse().map(e=>`<div class="entry"><div><p>${esc(e.t)}</p><time>${esc(e.when)}</time></div></div>`).join('')}</div>`:'');
- $('gb').onclick=()=>{const t=$('gt').value.trim();if(!t)return toast('Write one good thing first 💗');const s=LY.stamp(),a=garden();a.push({t,when:s.text,iso:s.iso,k:Math.floor(Math.random()*6)});LY.set('garden_'+st.scene,a);render();toast(st.scene==='forest'?'A flower bloomed in the forest ✨':'A flower bloomed 🌸')}}
+ $('gb').onclick=()=>{const t=$('gt').value.trim();if(!t)return toast('Write one good thing first 💗');const s=LY.stamp(),a=garden();a.push({t,when:s.text,iso:s.iso,k:Math.floor(Math.random()*6)});LY.set('garden_'+st.scene,a);render();toast(st.scene==='forest'?'A flower bloomed in the forest ✨':'A flower bloomed 🌸')};if(F)wishPanel(el)}
 function bindGarden(){document.querySelectorAll('.fl').forEach(f=>{const sh=()=>{const e=garden()[+f.dataset.i];if(e)toast(`🌸 ${e.t} · ${e.when}`)};f.onclick=sh;f.onkeydown=ev=>{if(ev.key==='Enter')sh()}})}
 
 function flowersSVG(sc,n){const all=garden(sc),gd=all.slice(-70),pf=sc==='forest'?fposF:fpos;let o='';const fl=gd.map((e,k)=>({e,i:all.length-gd.length+k})).map(({e,i})=>({...pf(i),k:e.k,i})).sort((a,b)=>a.y-b.y);
@@ -168,8 +168,38 @@ function forest(){const n=st.mode==='night',L=lit();let o='';
  // butterflies
  const bf=(cls,c1,c2,id)=>`<g class="bfly ${cls}"><g class="hot" id="${id}" tabindex="0" role="button" aria-label="a butterfly"><g class="flap"><ellipse cx="-5" cy="-2" rx="6" ry="8" fill="${c1}"/><ellipse cx="5" cy="-2" rx="6" ry="8" fill="${c1}"/><ellipse cx="-4" cy="5" rx="4" ry="5" fill="${c2}"/><ellipse cx="4" cy="5" rx="4" ry="5" fill="${c2}"/></g><rect x="-1" y="-6" width="2" height="14" rx="1" fill="#4a3a30"/><circle r="22" fill="transparent"/></g></g>`;
  o+=bf('b1',n?'#8ff0ff':'#ffb347',n?'#c6a8ff':'#ff7a59','bf1')+bf('b2',n?'#ffa8e8':'#ffe066',n?'#8ff0ff':'#ffb347','bf2');
+ // fox (unlocked by flowers)
+ if(garden('forest').length>=5)o+=`<g class="hot" id="fox" tabindex="0" role="button" aria-label="the fox" transform="translate(150,488) scale(1.15)"><path class="tailw" d="M-22 -4Q-46 -10 -42 -28Q-30 -22 -20 -12z" fill="#e8873a"/><path d="M-42 -28q4-6 9-2q-3 5-9 2z" fill="#fff"/><ellipse cx="0" cy="-8" rx="22" ry="11" fill="#e8873a"/><ellipse cx="6" cy="-4" rx="10" ry="5" fill="#fff2e0"/><rect x="-14" y="-2" width="5" height="10" rx="2.5" fill="#7a4a2a"/><rect x="10" y="-2" width="5" height="10" rx="2.5" fill="#7a4a2a"/><circle cx="22" cy="-18" r="10" fill="#e8873a"/><path d="M14 -25l-1-12 8 7zM26 -27l5-11 3 13z" fill="#e8873a"/><path d="M26 -14q6 0 8 4q-5 4-12 2z" fill="#fff2e0"/><circle cx="19" cy="-19" r="1.5" fill="#3a2a22"/><circle cx="32" cy="-12" r="1.6" fill="#3a2a22"/><rect x="-30" y="-40" width="70" height="52" fill="transparent"/></g>`;
+ // wish stars (night)
+ if(n)o+=LY.get('wishes',[]).slice(-24).map((w,i,a)=>{const x=86+((i*53)%228),y=12+((i*37)%104);return `<g class="hot wstar" data-w="${LY.get('wishes',[]).length-a.length+i}" tabindex="0" role="button" aria-label="a wish star"><path class="spark" style="animation-delay:${(i*.37%2).toFixed(2)}s" d="M${x} ${y-8}l2.4 5.2 5.6.8-4 4 1 5.6-5-2.7-5 2.7 1-5.6-4-4 5.6-.8z" fill="#ffe27a"/><circle cx="${x}" cy="${y}" r="14" fill="transparent"/></g>`}).join('');
+ // portals
+ const fnd=LY.get('portals',[]);
+ o+=PORT.map((P,i)=>`<g class="hot" id="p${i}" tabindex="0" role="button" aria-label="a glowing spot"><circle class="spark" style="animation-delay:${i*.6}s" cx="${P.x}" cy="${P.y}" r="${fnd.includes(i)?5:3.4}" fill="${fnd.includes(i)?'#ffd1e8':'#fff6c8'}"/><circle cx="${P.x}" cy="${P.y}" r="${fnd.includes(i)?15:10}" fill="${fnd.includes(i)?'#ff9ad0':'#fff6c8'}" opacity=".22"/><circle cx="${P.x}" cy="${P.y}" r="17" fill="transparent"/></g>`).join('');
+ // rabbit
+ o+=`<g class="rab" id="rab" tabindex="0" role="button" aria-label="a rabbit"><g class="hop"><ellipse cx="0" cy="-8" rx="11" ry="7" fill="#f4ece4"/><circle cx="-10" cy="-13" r="6" fill="#f4ece4"/><path d="M-12-18q-3-14 0-16q4 3 3 15zM-7-18q0-14 4-14q2 4-1 15z" fill="#f4ece4"/><path d="M-11-20q-1-8 0-10" stroke="#ffb3c1" stroke-width="1.6" fill="none"/><circle cx="-12" cy="-14" r="1.3" fill="#3a2a22"/><circle cx="11" cy="-10" r="4" fill="#fff"/><ellipse cx="2" cy="-2" rx="5" ry="3" fill="#e6d8cc"/></g><circle cx="0" cy="-10" r="22" fill="transparent"/></g>`;
+ // fairy
+ o+=`<g id="fairy" pointer-events="none" transform="translate(${fp.x.toFixed(1)},${fp.y.toFixed(1)})"><circle r="22" fill="url(#fglow)"/><g class="flap"><ellipse cx="-6" cy="-3" rx="6" ry="9" fill="#fff" opacity=".75" transform="rotate(-25 -6 -3)"/><ellipse cx="6" cy="-3" rx="6" ry="9" fill="#ffd1f0" opacity=".75" transform="rotate(25 6 -3)"/></g><circle r="3.4" fill="#fffbe6"/></g>`;
  o+=`<rect width="400" height="500" fill="#06101c" opacity="${n?(L?.1:.28):0}" pointer-events="none"/>`;
  return `<svg id="room" viewBox="0 0 400 500" role="img" aria-label="enchanted forest">${o}</svg>`}
+const PORT=[{x:74,y:236,n:'The Owl Post',s:'Harry Potter',e:'🦉✉️',t:'A tawny owl drops a letter, sealed with wax and addressed just to you: “You were always meant to find a place like this.”'},
+ {x:330,y:214,n:'The Pine Tree',s:'Percy Jackson',e:'🌲⚡',t:'The old pine glows gold for a heartbeat. Somewhere a camp fire is lit, and there is always a bunk saved for you.'},
+ {x:144,y:306,n:'The Silk Ribbon',s:'Shatter Me',e:'🎀💗',t:'A ribbon drifts down from the branches. Soft things can be strong things, and you are allowed to be both.'},
+ {x:266,y:268,n:'The Moonlit Meadow',s:'Twilight',e:'🌕🌫️',t:'Mist curls over a quiet clearing and the moonlight sparkles on the grass. Nothing here is in a hurry.'},
+ {x:42,y:372,n:'The Ivy Gate',s:'Maze Runner',e:'🌿🚪',t:'A gate opens in the ivy. Every maze has a way out, and you never have to run it alone.'}];
+const fp={x:200,y:220,tx:200,ty:220,last:0,next:0,run:false};
+const FAIRY=['I found a quiet spot, come rest here ✨','You have done enough for today 💗','Look up. The light is on your side.','Breathe slowly with me 🌿','You are my favourite human to follow ✨'];
+function fairyLoop(){if(st.scene!=='forest'){fp.run=false;return}const g=$('fairy'),t=Date.now();
+ if(g){if(t-fp.last>3500){fp.tx=200+Math.sin(t/2300)*120;fp.ty=230+Math.cos(t/1700)*70}
+  fp.x+=(fp.tx-fp.x)*.06;fp.y+=(fp.ty-fp.y)*.06;g.setAttribute('transform',`translate(${fp.x.toFixed(1)},${(fp.y+Math.sin(t/260)*3).toFixed(1)})`);
+  if(t>fp.next){if(fp.next)toast(FAIRY[Math.floor(Math.random()*FAIRY.length)]);fp.next=t+28000}}
+ requestAnimationFrame(fairyLoop)}
+let rabT=null;
+function rabbitSoon(first){clearTimeout(rabT);rabT=setTimeout(()=>{if(st.scene!=='forest')return;const r=$('rab');if(r){r.dataset.got='';r.classList.remove('run');void r.getBoundingClientRect();r.classList.add('run')}rabbitSoon()},first?6000:18000+Math.random()*20000)}
+function wishPanel(el){const w=LY.get('wishes',[]),pf=LY.get('portals',[]),cl=LY.get('clovers',0),nf=garden('forest').length;
+ el.insertAdjacentHTML('beforeend',`<hr style="border:0;border-top:2px dashed var(--rose);margin:1rem 0"><h3 style="font-family:'Great Vibes',cursive;font-weight:400;color:var(--wine);font-size:2rem;text-align:center">Wish lantern</h3><p class="sub" style="margin:0 0 .6rem">write a wish and it floats away${w.length?` · ${w.length} shining as stars at night ✨`:' · it becomes a star at night ✨'}</p><textarea class="note" id="wt" placeholder="I wish…"></textarea><div class="row"><button class="pill" id="wb">Release lantern 🏮</button></div><p class="sub" style="margin:.8rem 0 0">✨ portals ${pf.length}/${PORT.length} · 🍀 clovers ${cl} · 🦊 ${nf>=5?'the fox is here':`plant ${5-nf} more flower${5-nf>1?'s':''} for a shy visitor`}</p>`);
+ $('wb').onclick=()=>{const t=$('wt').value.trim();if(!t)return toast('Write a wish first 💗');const a=LY.get('wishes',[]);a.push({t,when:LY.stamp().text});LY.set('wishes',a);
+  const sv=$('room');if(sv){sv.insertAdjacentHTML('beforeend',`<g class="wl"><rect x="-9" y="-12" width="18" height="24" rx="6" fill="#ffe29a" stroke="#a8825a" stroke-width="2"/><circle r="28" fill="url(#fglow)"/></g>`)}
+  toast(st.mode==='night'?'Your wish floats up and becomes a star ✨':'Your wish floats up. It will shine as a star tonight ✨');setTimeout(()=>{if(st.scene==='forest')render()},4700)}}
 const NOTES=[523.25,587.33,659.25,783.99,880];
 function chime(i){try{if(!ac){ac=new(window.AudioContext||window.webkitAudioContext)()}if(ac.state==='suspended')ac.resume();
  [1,2].forEach(m=>{const o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.value=NOTES[i%5]*m;g.gain.setValueAtTime(.0001,ac.currentTime);g.gain.exponentialRampToValueAtTime(m===1?.16:.04,ac.currentTime+.02);g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+1.6);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+1.7)})}catch(e){}}
@@ -178,7 +208,12 @@ function bindForest(){const a=(id,f)=>{const e=$(id);if(!e)return;e.onclick=f;e.
  ['m1','m2','m3'].forEach(id=>a(id,()=>{chime(mi);toast(KIND[mi%KIND.length]);mi++;const e=$(id).querySelector('.mi');e.classList.remove('pop');void e.getBoundingClientRect();e.classList.add('pop')}));
  ['l1','l2'].forEach(id=>a(id,()=>{st.lit=!lit();render();toast(st.lit?'Lantern glowing 🏮':'Lanterns resting')}));
  ['bf1','bf2'].forEach(id=>a(id,()=>{chime(mi+2);mi++;toast(['A butterfly landed on your hand 🦋','It stayed a moment, just for you 🦋','Soft wings, soft day 🦋'][mi%3])}));
- bindGarden()}
+ PORT.forEach((P,i)=>a('p'+i,()=>{const f=LY.get('portals',[]);if(!f.includes(i)){f.push(i);LY.set('portals',f)}chime(i);render();modal(`<h2>${P.n}</h2><p class="sub" style="margin:0">${P.s}</p><div style="font-size:3.4rem;text-align:center;margin:.6rem">${P.e}</div><p style="text-align:center;line-height:1.5">${P.t}</p><p class="sub" style="margin:.6rem 0 0">✨ portals found: ${f.length}/${PORT.length}</p>`)}));
+ a('fox',()=>{chime(mi);mi++;toast(['The fox leans into your hand 🦊💗','The fox curls its tail around you','A tiny happy fox sound 🦊'][mi%3])});
+ a('rab',()=>{const r=$('rab');if(!r||r.dataset.got)return;r.dataset.got='1';const c=LY.get('clovers',0)+1;LY.set('clovers',c);chime(4);toast('The rabbit left you a clover 🍀 ('+c+')');drawGarden()});
+ document.querySelectorAll('.wstar').forEach(e=>{const f=()=>{const w=LY.get('wishes',[])[+e.dataset.w];if(w)toast('✨ '+w.t+' · '+w.when)};e.onclick=f;e.onkeydown=ev=>{if(ev.key==='Enter')f()}});
+ bindGarden();
+ if(!fp.run){fp.run=true;fp.last=0;requestAnimationFrame(fairyLoop)}rabbitSoon(true)}
 
 /* ---------- beach + shells ---------- */
 const SHELLS=[[60,414],[132,448],[212,424],[292,458],[338,404],[172,484],[252,396],[98,474]],SCOL=['#ffb3c1','#fff4e6','#ffc08a','#e8c6ff'];
@@ -213,9 +248,10 @@ function render(){const stg=$('stage');
  else{clearTimeout(cat.t);cat.t=null;
   if(st.scene==='mountain'){stg.innerHTML=mountain();bindGarden();$('hint').textContent='tap a flower to remember its good thing'}
   else if(st.scene==='beach'){stg.innerHTML=beach();bindBeach();$('hint').textContent='tap the shells on the sand to collect them'}
-  else{stg.innerHTML=forest();bindForest();$('hint').textContent='tap a mushroom, lantern or butterfly · write a good thing to grow a glowing flower'}}
+  else{stg.innerHTML=forest();bindForest();$('hint').textContent='follow the fairy · tap mushrooms, lanterns, butterflies and glowing spots · write below to grow flowers and send wishes'}}
  drawGarden()}
 $('scenes').innerHTML=SC.map(([k,l])=>`<button class="pill" data-s="${k}">${l}</button>`).join('');
+$('stage').addEventListener('pointermove',ev=>{const sv=$('room');if(st.scene!=='forest'||!sv)return;const r=sv.getBoundingClientRect();fp.tx=(ev.clientX-r.left)/r.width*400+14;fp.ty=(ev.clientY-r.top)/r.height*500-14;fp.last=Date.now()});
 $('scenes').onclick=e=>{const b=e.target.closest('[data-s]');if(!b)return;st.scene=b.dataset.s;render();startSound()};
 $('dn').onclick=()=>{st.lit=null;st.mode=st.mode==='day'?'night':'day';render()};
 $('snd').onclick=()=>{soundOn=!soundOn;render();if(soundOn)startSound();else stopSound()};
