@@ -4,7 +4,7 @@ const JARS={
  achievement:{t:'Achievement Jar',p:'an academic achievement to be proud of',img:'jar_empty',ph:'I achieved…',s:'academic achievements'},
  loved:{t:'Loved Today Jar',p:'something you loved today',img:'jar_hearts',ph:'Today I loved…',s:'little joys'},
  books:{t:'Book Wins Jar',p:'a win from your books and studies',img:'jar_empty',ph:'I finished / understood / aced…',s:'study & book wins',books:1}};
-const jarImg=(j,c)=>`<div class="ji"><img class="j${j.books?' tint':''}" src="assets/${j.img}.png" alt="">${j.books?'<img class="inbook" src="openbook.png" style="left:12%;transform:rotate(-8deg)" alt=""><img class="inbook" src="bookvase.png" style="left:46%;bottom:20%;width:30%" alt="">':''}</div>`;
+const jarImg=(j)=>`<div class="ji"><div class="jw"><img class="j${j.books?' tint':''}" src="ly_${j.img}.png" alt="">${j.books?'<img class="inbook" src="openbook.png" style="left:6%;bottom:9%;width:62%;transform:rotate(-6deg)" alt=""><img class="inbook" src="bookvase.png" style="right:8%;bottom:14%;width:40%" alt="">':''}</div></div>`;
 const list=document.getElementById('list');
 if(!list){ // hub
  const bk=document.getElementById('backup');lyBackupBar(bk,()=>location.reload());
